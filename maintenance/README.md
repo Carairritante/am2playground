@@ -69,8 +69,8 @@ Use JDK 17 com destino Java 8 e ASM All 5.0.3. A biblioteca não acompanha o for
 Exemplos para Windows executados neste diretório:
 
 ```powershell
-javac --release 8 -cp "C:\dependencias\asm-all-5.0.3.jar" -d build\patchers src\PatchCauldron.java src\PatchPortal.java src\PatchSilverOrb.java src\PatchManaRegen.java
-python compile-helper.py --javac "C:\Java\jdk-17\bin\javac.exe" --asm "C:\dependencias\asm-all-5.0.3.jar"
+javac --release 8 -cp "C:\dependencias\asm-all-5.0.3.jar" -d build\patchers src\PatchCauldron.java src\PatchPortal.java src\PatchSilverOrb.java src\PatchManaRegen.java src\PatchProgression.java
+python compile-helper.py --javac "C:\Java\jdk-17\bin\javac.exe" --asm "C:\dependencias\asm-all-5.0.3.jar" --forge "C:\dependencias\forge-1.7.10-1614.jar"
 ```
 
 Os patchers recebem arquivos de classe, não um modpack inteiro:
@@ -81,6 +81,7 @@ java -cp "build\patchers;C:\dependencias\asm-all-5.0.3.jar" PatchPortal entrada.
 java -cp "build\patchers;C:\dependencias\asm-all-5.0.3.jar" PatchPortal entrada.class saida.class events
 java -cp "build\patchers;C:\dependencias\asm-all-5.0.3.jar" PatchSilverOrb ItemResource-original.class ItemResource-corrigida.class
 java -cp "build\patchers;C:\dependencias\asm-all-5.0.3.jar" PatchManaRegen ExtendedPropertiesTransformer-original.class ExtendedPropertiesTransformer-corrigida.class
+java -cp "build\patchers;C:\dependencias\asm-all-5.0.3.jar" PatchProgression entrada.class saida.class init
 ```
 
 Para o caldeirão, a classe alvo é `PGWitcheryBrews`. No portal, `factory` atua em
@@ -94,6 +95,12 @@ a orb Silver corrigidos, use `PatchManaRegen` no transformador
 e acrescente os dois novos payloads `ManaRegenTransformFix` e `ManaRegenEvents`.
 Não substitua a classe de jogo ExtendedProperties por esse arquivo: o alvo é o
 transformador do addon, e o reparo é aplicado na próxima inicialização do jogo.
+
+Na progressão, `PatchProgression` tem quatro modos: `init` em AM2PG, `cast` em
+PGCommonEventHandler, `learn` em PGLearnHelper e `orb` em ItemResource. Ele exige
+classes sem esses hooks anteriores. Acrescente também as duas classes do payload
+`progression/`, mescle as mensagens novas e execute `merge_compendium.py` sobre
+uma cópia do JAR. Nunca inclua as assinaturas de API geradas para compilação.
 
 `compile-helper.py` exporta as classes novas em `build/payload/`. As assinaturas de API
 geradas em `build/` são apenas auxiliares de compilação e **não devem acompanhar um
@@ -124,7 +131,7 @@ aplique `PatchSilverOrb` em `ItemResource`, substitua o auxiliar do portal e acr
 o auxiliar do item, ambos de `build/payload/`. Mescle as duas novas mensagens dos
 arquivos em `resources/` com as traduções existentes, preservando as outras chaves.
 Não inclua os stubs. Na manutenção atual, o cliente e o servidor precisam do AM2.5
-CR4 para aplicar a regra de compras somente de talentos e exibir os pontos Silver.
+CR5 para a progressão atual e o evento de extensão da consagração.
 
 ## Colaboração
 
