@@ -37,7 +37,8 @@ def main():
     subprocess.run([sys.executable, str(ROOT / 'compile-helper.py')], check=True)
     patchers = BUILD / 'patchers'
     subprocess.run(['javac', '--release', '8', '-cp', str(asm), '-d', str(patchers),
-        str(ROOT / 'src/PatchCauldron.java'), str(ROOT / 'src/PatchPortal.java')], check=True)
+        str(ROOT / 'src/PatchCauldron.java'), str(ROOT / 'src/PatchPortal.java'),
+        str(ROOT / 'src/PatchSilverOrb.java')], check=True)
     subprocess.run(['javac', '--release', '8', '-cp', os.pathsep.join([str(forge), str(server)]),
         '-d', str(BUILD / 'probes'), str(ROOT / 'tests/cauldronprobe/CauldronProbe.java'),
         str(ROOT / 'tests/portalprobe/PortalProbe.java')], check=True)
@@ -52,9 +53,13 @@ def main():
                 if int.from_bytes(data[6:8], 'big') > 52:
                     raise RuntimeError('Class is not Java 8 compatible: ' + str(path))
                 jar.writestr(path.relative_to(directory).as_posix(), data)
+        for path in sorted((ROOT / 'resources').rglob('*.lang')):
+            jar.write(path, path.relative_to(ROOT / 'resources').as_posix())
     with zipfile.ZipFile(output) as jar:
-        expected = {'META-INF/MANIFEST.MF', 'PatchCauldron.class', 'PatchPortal.class',
-            'airburn/am2playground/compat/thaumcraft/PGRitualPortalRewards.class'}
+        expected = {'META-INF/MANIFEST.MF', 'PatchCauldron.class', 'PatchPortal.class', 'PatchSilverOrb.class',
+            'airburn/am2playground/compat/thaumcraft/PGRitualPortalRewards.class',
+            'airburn/am2playground/items/PGSilverOrbRewards.class',
+            'assets/am2pg/lang/en_US.lang', 'assets/am2pg/lang/pt_BR.lang'}
         if set(jar.namelist()) != expected:
             raise RuntimeError('Unexpected classes packaged in tooling JAR')
     line = hashlib.sha256(output.read_bytes()).hexdigest() + '  ' + output.name + '\n'

@@ -3,6 +3,33 @@
 Registro publicado em 31 de outubro de 2026. Os resultados abaixo são da sessão
 local de manutenção; não são resultados de CI deste fork.
 
+## Recompensa Silver livre — AM2.5 CR3
+
+Em servidor Forge descartável, o portal foi morto por um jogador simulado e a orb
+real do drop foi usada. Foram conferidos o saldo, as habilidades, o consumo,
+a compra de Level e o ciclo de serialização dos quatro pontos.
+
+```text
+ACTUAL_PLAYER_KILL_ORB=PASS
+MAGIC_LEVEL_ZERO_REJECTED=PASS
+ACTUAL_ORB_USE_SILVER_BEFORE=0; AFTER=1
+ACTUAL_ORB_USE_FIVE_POINTS_EACH_COLOR=PASS
+ACTUAL_ORB_USE_BLOOD_SKILLS=PASS
+BLOOD_BOSS_TEMPLATE_UNCHANGED=PASS
+BLANK_NEI_ORB_NO_REWARD=PASS
+STACKED_ORBS_ONE_POINT_PER_ITEM=PASS
+ALL_FOUR_POINTS_PACKET_AND_SAVE_ROUNDTRIP=PASS
+SILVER_SPENT_ON_LEVEL=PASS
+PORTAL_PATCH=PASS
+```
+
+Também passaram: portal natural sem orb extra, evento cancelado sem recompensa,
+morte sem participação de jogador sem recompensa e proteção contra evento duplicado.
+O caldeirão foi reexecutado com os dois JARs novos: receita de Void Paradox,
+nota correta, rejeição de nota errada e idempotência passaram novamente.
+Não foi feita validação visual completa do cliente. Os registros abaixo preservam
+os testes anteriores à adição do ponto Silver livre.
+
 ## Caldeirão original
 
 ```text

@@ -49,20 +49,82 @@ public class PortalProbe {
    Object dataPlayer=staticCall("am2.playerextensions.SkillData","For",player);
    Object silver=Enum.valueOf((Class)Class.forName("am2.api.spell.enums.SkillPointTypes"),"SILVER");
    int beforeSilver=((Number)call(dataPlayer,"getSpellPoints",silver)).intValue();
-   Object useStack=call(field("airburn.am2playground.items.PGItems","whiteOrbBloodBoss"),"func_77946_l");
+   Object reward=null;
+   for(Object drop:(List<?>)observedDrops.getClass().getField("drops").get(observedDrops)){
+    Object s=call(drop,"func_92059_d");
+    if(call(s,"func_77973_b")==field("airburn.am2playground.items.PGItems","resource"))reward=s;
+   }
+   if(reward==null)throw new AssertionError("Missing reward stack");
+   if(!Integer.valueOf(1).equals(call(call(reward,"func_77978_p"),"func_74762_e","am2_silver_points")))throw new AssertionError("Ritual reward lacks Silver marker");
+   Object useStack=call(reward,"func_77946_l");
+   call(props,"setMagicLevel",0);
+   useOrb(useStack,world,player);
+   if(!Integer.valueOf(1).equals(useStack.getClass().getField("field_77994_a").get(useStack)) || ((Number)call(dataPlayer,"getSpellPoints",silver)).intValue()!=beforeSilver)throw new AssertionError("Uninitiated player received reward");
+   call(props,"setMagicLevel",1);
+   log.add("MAGIC_LEVEL_ZERO_REJECTED=PASS");
+   Object[] colors=new Object[3];int[] previousColors=new int[3];int colorIndex=0;
+   for(String name:new String[]{"BLUE","GREEN","RED"}){
+    Object color=Enum.valueOf((Class)Class.forName("am2.api.spell.enums.SkillPointTypes"),name);
+    colors[colorIndex]=color;previousColors[colorIndex]=((Number)call(dataPlayer,"getSpellPoints",color)).intValue();colorIndex++;
+   }
    Class.forName("net.minecraft.item.Item").getMethod("func_77659_a",Class.forName("net.minecraft.item.ItemStack"),wc,Class.forName("net.minecraft.entity.player.EntityPlayer")).invoke(call(useStack,"func_77973_b"),useStack,world,player);
    int afterSilver=((Number)call(dataPlayer,"getSpellPoints",silver)).intValue();
    log.add("ACTUAL_ORB_USE_SILVER_BEFORE="+beforeSilver+"; AFTER="+afterSilver);
-   if(beforeSilver!=afterSilver)throw new AssertionError("Unexpected free silver points");
+   if(afterSilver!=beforeSilver+1)throw new AssertionError("Expected exactly one free Silver point");
+   if(!Integer.valueOf(0).equals(useStack.getClass().getField("field_77994_a").get(useStack)))throw new AssertionError("Orb not consumed");
+   for(int color=0;color<3;color++)if(((Number)call(dataPlayer,"getSpellPoints",colors[color])).intValue()!=previousColors[color]+5)throw new AssertionError("Colored reward changed");
+   log.add("ACTUAL_ORB_USE_FIVE_POINTS_EACH_COLOR=PASS");
    for(String skill:new String[]{"bloodDevastation","bloodVortex"})if(!Boolean.TRUE.equals(staticCall("airburn.am2playground.utils.helpers.PGLearnHelper","isSkillKnown",player,field("airburn.am2playground.spell.PGSpells",skill))))throw new AssertionError("Skill was not learned: "+skill);
    log.add("ACTUAL_ORB_USE_BLOOD_SKILLS=PASS");
+   Object templateOrb=field("airburn.am2playground.items.PGItems","whiteOrbBloodBoss");
+   if(!Integer.valueOf(0).equals(call(call(templateOrb,"func_77978_p"),"func_74762_e","am2_silver_points")))throw new AssertionError("Global blood boss template mutated");
+   useOrb(call(templateOrb,"func_77946_l"),world,player);
+   if(((Number)call(dataPlayer,"getSpellPoints",silver)).intValue()!=afterSilver)throw new AssertionError("Other boss orb gave free Silver");
+   log.add("BLOOD_BOSS_TEMPLATE_UNCHANGED=PASS");
+   Object blank=stack(field("airburn.am2playground.items.PGItems","resource"),3);
+   useOrb(blank,world,player);
+   if(((Number)call(dataPlayer,"getSpellPoints",silver)).intValue()!=afterSilver || !Integer.valueOf(1).equals(blank.getClass().getField("field_77994_a").get(blank)))throw new AssertionError("Blank NEI orb rewarded");
+   log.add("BLANK_NEI_ORB_NO_REWARD=PASS");
+   Object twice=call(reward,"func_77946_l");twice.getClass().getField("field_77994_a").set(twice,2);
+   useOrb(twice,world,player);useOrb(twice,world,player);
+   if(((Number)call(dataPlayer,"getSpellPoints",silver)).intValue()!=afterSilver+2 || !Integer.valueOf(0).equals(twice.getClass().getField("field_77994_a").get(twice)))throw new AssertionError("Stacked orbs did not grant one point each");
+   if(Boolean.TRUE.equals(staticCall("airburn.am2playground.items.PGSilverOrbRewards","grantSilver",twice,player)))throw new AssertionError("Empty stack rewarded");
+   log.add("STACKED_ORBS_ONE_POINT_PER_ITEM=PASS");
+   checkSync(dataPlayer,player,world,log);
+   Object level=field("airburn.am2playground.spell.PGSpells","level");
+   Object trees=field("am2.spell.SkillTreeManager","instance");
+   Object entry=call(trees,"getSkillTreeEntry",level);
+   if(!"CAN_LEARN".equals(call(dataPlayer,"getLearnState",entry,player).toString()))throw new AssertionError("Level is not purchasable");
+   int purchaseBefore=((Number)call(dataPlayer,"getSpellPoints",silver)).intValue();
+   call(dataPlayer,"learn",level);
+   if(((Number)call(dataPlayer,"getSpellPoints",silver)).intValue()!=purchaseBefore-1 || !Boolean.TRUE.equals(staticCall("airburn.am2playground.utils.helpers.PGLearnHelper","isSkillKnown",player,level)))throw new AssertionError("Level purchase failed");
+   log.add("SILVER_SPENT_ON_LEVEL=PASS");
+   checkSync(dataPlayer,player,world,log);
   }
   Object template=field("airburn.am2playground.items.PGItems","whiteOrbBloodBoss"),tag=call(template,"func_77978_p");
   if(!Arrays.equals((int[])call(tag,"func_74759_k","am2_points"),new int[]{5,5,5}))throw new AssertionError("Wrong orb points");
-  Object skills=call(tag,"func_150295_c","am2_skills",3);if(!Integer.valueOf(2).equals(call(skills,"func_74745_c")))throw new AssertionError("Missing blood skills");log.add("ORB_POINTS_BLUE_GREEN_RED=5,5,5; SILVER=0");log.add("BLOOD_SKILL_COUNT=2");
+  Object skills=call(tag,"func_150295_c","am2_skills",3);if(!Integer.valueOf(2).equals(call(skills,"func_74745_c")))throw new AssertionError("Missing blood skills");log.add("TEMPLATE_POINTS_BLUE_GREEN_RED=5,5,5; RITUAL_EXTRA_SILVER=1");log.add("BLOOD_SKILL_COUNT=2");
   log.add(marked?"PORTAL_PATCH=PASS":"PORTAL_BASELINE=PASS");
  }catch(Throwable ex){code=1;log.add("ERROR="+ex);ex.printStackTrace();}
  try{Files.write(Paths.get("portal-probe-result.txt"),log);}catch(Exception ex){ex.printStackTrace();}for(String line:log)System.out.println("PORTAL_PROBE "+line);
  cpw.mods.fml.common.FMLCommonHandler.instance().exitJava(code,false);
+ }
+ static void useOrb(Object stack,Object world,Object player)throws Exception {
+  Class.forName("net.minecraft.item.Item").getMethod("func_77659_a",Class.forName("net.minecraft.item.ItemStack"),Class.forName("net.minecraft.world.World"),Class.forName("net.minecraft.entity.player.EntityPlayer")).invoke(call(stack,"func_77973_b"),stack,world,player);
+ }
+ static void checkSync(Object data,Object player,Object world,List<String> log)throws Exception {
+  call(data,"setFullSync");
+  Method encode=data.getClass().getDeclaredMethod("getUpdateData");encode.setAccessible(true);
+  byte[] packet=(byte[])encode.invoke(data);
+  Object decoded=data.getClass().getConstructor(Class.forName("net.minecraft.entity.player.EntityPlayer")).newInstance(player);
+  call(decoded,"init",player,world);
+  if(!Boolean.TRUE.equals(call(decoded,"handlePacketData",packet)))throw new AssertionError("Sync rejected");
+  for(Object type:Class.forName("am2.api.spell.enums.SkillPointTypes").getEnumConstants())
+   if(!call(data,"getSpellPoints",type).equals(call(decoded,"getSpellPoints",type)))throw new AssertionError("Point sync mismatch: "+type);
+  Object nbt=Class.forName("net.minecraft.nbt.NBTTagCompound").newInstance();
+  call(data,"saveNBTData",nbt);call(decoded,"loadNBTData",nbt);
+  for(Object type:Class.forName("am2.api.spell.enums.SkillPointTypes").getEnumConstants())
+   if(!call(data,"getSpellPoints",type).equals(call(decoded,"getSpellPoints",type)))throw new AssertionError("Saved point mismatch: "+type);
+  log.add("ALL_FOUR_POINTS_PACKET_AND_SAVE_ROUNDTRIP=PASS");
  }
 }

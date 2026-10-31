@@ -44,6 +44,19 @@ STUBS = {'airburn/am2playground/compat/PGCompat.java': 'package airburn.am2playg
                                                                      'net.minecraft.entity.EntityLivingBase '
                                                                      '{}'}
 
+STUBS.update({
+ 'net/minecraftforge/common/util/FakePlayer.java': 'package net.minecraftforge.common.util; public class FakePlayer extends net.minecraft.entity.player.EntityPlayer {}',
+ 'net/minecraft/entity/player/EntityPlayer.java': 'package net.minecraft.entity.player; public class EntityPlayer extends net.minecraft.entity.EntityLivingBase { public void func_145747_a(net.minecraft.util.IChatComponent message){} }',
+ 'net/minecraft/item/ItemStack.java': 'package net.minecraft.item; public class ItemStack { public int field_77994_a; public ItemStack func_77946_l(){return null;} public boolean func_77942_o(){return false;} public net.minecraft.nbt.NBTTagCompound func_77978_p(){return null;} }',
+ 'net/minecraft/nbt/NBTTagCompound.java': 'package net.minecraft.nbt; public class NBTTagCompound { public boolean func_74767_n(String k){return false;} public void func_74757_a(String k,boolean b){} public void func_74768_a(String k,int v){} public int func_74762_e(String k){return 0;} }',
+ 'net/minecraft/util/IChatComponent.java': 'package net.minecraft.util; public interface IChatComponent {String func_150260_c();}',
+ 'net/minecraft/util/ChatComponentTranslation.java': 'package net.minecraft.util; public class ChatComponentTranslation implements IChatComponent {public ChatComponentTranslation(String k,Object... args){} public String func_150260_c(){return null;} }',
+ 'am2/api/spell/enums/SkillPointTypes.java': 'package am2.api.spell.enums; public enum SkillPointTypes {BLUE,GREEN,RED,SILVER}',
+ 'am2/playerextensions/ExtendedProperties.java': 'package am2.playerextensions; public class ExtendedProperties {public static ExtendedProperties For(net.minecraft.entity.EntityLivingBase e){return null;} public int getMagicLevel(){return 0;} }',
+ 'am2/playerextensions/SkillData.java': 'package am2.playerextensions; public class SkillData {public static SkillData For(net.minecraft.entity.player.EntityPlayer p){return null;} public void incrementSpellPoints(am2.api.spell.enums.SkillPointTypes t){} public void forceSync(){} }',
+ 'org/lwjgl/input/Keyboard.java': 'package org.lwjgl.input; public class Keyboard {public static boolean isKeyDown(int key){return false;} }',
+})
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--javac', default='javac')
@@ -59,13 +72,19 @@ def main():
         sources.append(str(target))
     helper = Path('airburn/am2playground/compat/thaumcraft/PGRitualPortalRewards')
     sources.append(str(root / 'src' / helper.with_suffix('.java')))
+    item_helper = Path('airburn/am2playground/items/PGSilverOrbRewards')
+    sources.append(str(root / 'src' / item_helper.with_suffix('.java')))
     classes = build / 'compile-only-classes'
     subprocess.run([args.javac, '--release', '8', '-d', str(classes), *sources], check=True)
     payload = build / 'payload' / helper.with_suffix('.class')
     payload.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(classes / helper.with_suffix('.class'), payload)
+    item_payload = build / 'payload' / item_helper.with_suffix('.class')
+    item_payload.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(classes / item_helper.with_suffix('.class'), item_payload)
     print('Payload:', payload)
-    print('Only this payload class may be packaged; do not ship compile-only API stubs.')
+    print('Payload:', item_payload)
+    print('Only these payload classes may be packaged; do not ship compile-only API stubs.')
 
 if __name__ == '__main__':
     main()
