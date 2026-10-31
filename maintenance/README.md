@@ -74,3 +74,18 @@ ser mantidos separados das ferramentas novas durante a revisão.
 
 As ferramentas e testes novos deste diretório acompanham CC BY-NC 3.0, sem que essa
 declaração altere a licença do material original do autor.
+
+## CI e download dos artefatos
+
+O workflow do GitHub Actions compila as ferramentas e os verificadores em cada
+push e PR para `correcoes`; também pode ser iniciado manualmente. A saída fica na
+própria execução, em **Artifacts**, com download direto de dois arquivos:
+
+- `AM2PG-maintenance-tools.jar`
+- `SHA256SUMS`, contendo o SHA-256 desse JAR
+
+Não há ZIP externo nem release automática por build. O JAR contém apenas os
+patchers e o novo auxiliar: não é o mod completo e não deve ser colocado em `mods`.
+As dependências de compilação, assinaturas de API e verificadores temporários não
+acompanham o JAR. O CI verifica compilação e empacotamento; os testes de integração
+no jogo continuam exigindo o ambiente local descrito acima.
