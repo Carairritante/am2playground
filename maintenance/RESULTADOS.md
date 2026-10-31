@@ -3,6 +3,28 @@
 Registro publicado em 31 de outubro de 2026. Os resultados abaixo são da sessão
 local de manutenção; não são resultados de CI deste fork.
 
+## Orb do portal: somente um ponto cinza
+
+A recompensa mais recente substitui os extras descritos nas seções históricas.
+Os testes executaram uma morte real de portal e o uso da orb obtida:
+
+```text
+RITUAL_ORB_PAYLOAD_SILVER_ONLY=PASS
+ACTUAL_ORB_USE_SILVER_BEFORE=0; AFTER=1
+ACTUAL_ORB_USE_NO_COLORED_POINTS=PASS
+ACTUAL_ORB_USE_NO_ABILITIES=PASS
+LEGACY_MARKED_ORB_SILVER_ONLY=PASS
+BLOOD_BOSS_TEMPLATE_UNCHANGED=PASS
+SILVER_REWARD_WITHOUT_BLOOD_MAGIC_FLAG=PASS
+PORTAL_PATCH=PASS
+```
+
+Também passaram consumo por unidade, bloqueio de pontos para personagem não iniciado,
+proteção contra duplicação, preservação da pérola, restrição de compras a talentos,
+aprendizado por recompensas especiais e sincronização/salvamento dos quatro saldos.
+O teste de Blood Magic ausente altera temporariamente a flag da integração, não
+desinstala esse mod. Os patches de caldeirão e regeneração foram preservados byte a byte.
+
 ## Travamento de regeneração e compras — AM2.5 CR4
 
 O ciclo foi reproduzido em processo descartável com a versão anterior:

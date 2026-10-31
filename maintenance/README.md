@@ -90,12 +90,12 @@ O ambiente usa Playground Beta 0.12.1, Witchery
 O registro está em [RESULTADOS.md](RESULTADOS.md). Não houve validação visual
 completa no cliente nem teste de todas as combinações de mods.
 
-A recompensa de sangue é uma adição solicitada, não a restauração de um drop
-original confirmado para o Crimson Portal. Ela concede Blood Devastation,
-Blood Vortex e 5 pontos azuis, verdes e vermelhos. A manutenção Silver acrescenta
-**1 ponto Silver livre** somente à cópia derrubada pelo portal do ritual. O modelo
-usado pelo outro boss permanece inalterado. Orbs antigas e a variante vazia do NEI
-não recebem essa recompensa retroativamente.
+A recompensa do Crimson Portal ritual é uma adição solicitada, não a restauração
+de um drop original confirmado. A versão atual concede **somente 1 ponto Silver
+livre**, sem pontos coloridos e sem ensinar habilidades. Orbs marcadas de versões
+anteriores também seguem essa regra ao serem usadas. A variante vazia do NEI
+continua sem recompensa. O modelo de orb do outro boss permanece inalterado.
+A recompensa Silver não exige Blood Magic carregado.
 
 Para montar o patch local Silver sobre o JAR que já tem os dois rituais corrigidos,
 aplique `PatchSilverOrb` em `ItemResource`, substitua o auxiliar do portal e acrescente

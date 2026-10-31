@@ -15,11 +15,13 @@ public final class PGSilverOrbRewards {
  private static final String SILVER="am2_silver_points";
  private PGSilverOrbRewards() {}
 
- /** The original item use method consumes one orb for both sets of rewards. */
+ /** Marked ritual orbs grant only Silver, including copies from older maintenance builds. */
  public static boolean grantSilver(ItemStack stack,EntityPlayer player) {
   if(stack==null || stack.field_77994_a<=0 || !stack.func_77942_o()
     || stack.func_77978_p().func_74762_e(SILVER)!=1
     || ExtendedProperties.For(player).getMagicLevel()<=0)return false;
+  stack.func_77978_p().func_82580_o("am2_points");
+  stack.func_77978_p().func_82580_o("am2_skills");
   if(!player.field_70170_p.field_72995_K) {
    SkillData data=SkillData.For(player);
    data.incrementSpellPoints(SkillPointTypes.SILVER);
