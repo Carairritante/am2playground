@@ -47,8 +47,8 @@ Use JDK 17 com destino Java 8 e ASM All 5.0.3. A biblioteca não acompanha o for
 Exemplos para Windows executados neste diretório:
 
 ```powershell
-javac --release 8 -cp "C:\dependencias\asm-all-5.0.3.jar" -d build\patchers src\PatchCauldron.java src\PatchPortal.java src\PatchSilverOrb.java
-python compile-helper.py --javac "C:\Java\jdk-17\bin\javac.exe"
+javac --release 8 -cp "C:\dependencias\asm-all-5.0.3.jar" -d build\patchers src\PatchCauldron.java src\PatchPortal.java src\PatchSilverOrb.java src\PatchManaRegen.java
+python compile-helper.py --javac "C:\Java\jdk-17\bin\javac.exe" --asm "C:\dependencias\asm-all-5.0.3.jar"
 ```
 
 Os patchers recebem arquivos de classe, não um modpack inteiro:
@@ -58,12 +58,20 @@ java -cp "build\patchers;C:\dependencias\asm-all-5.0.3.jar" PatchCauldron entrad
 java -cp "build\patchers;C:\dependencias\asm-all-5.0.3.jar" PatchPortal entrada.class saida.class factory
 java -cp "build\patchers;C:\dependencias\asm-all-5.0.3.jar" PatchPortal entrada.class saida.class events
 java -cp "build\patchers;C:\dependencias\asm-all-5.0.3.jar" PatchSilverOrb ItemResource-original.class ItemResource-corrigida.class
+java -cp "build\patchers;C:\dependencias\asm-all-5.0.3.jar" PatchManaRegen ExtendedPropertiesTransformer-original.class ExtendedPropertiesTransformer-corrigida.class
 ```
 
 Para o caldeirão, a classe alvo é `PGWitcheryBrews`. No portal, `factory` atua em
 `PGThaumcraftCompat` e `events` em `PGThaumcraftEvents`. Essas ferramentas foram
 preparadas para a versão Beta 0.12.1 examinada. Não reaplique uma alteração sobre
 uma classe já modificada; o patcher de caldeirão é uma ferramenta de aplicação única.
+
+Para acrescentar o reparo da regeneração ao JAR local que já possui os rituais e
+a orb Silver corrigidos, use `PatchManaRegen` no transformador
+`airburn/am2playground/preloader/transformers/am2/ExtendedPropertiesTransformer.class`
+e acrescente os dois novos payloads `ManaRegenTransformFix` e `ManaRegenEvents`.
+Não substitua a classe de jogo ExtendedProperties por esse arquivo: o alvo é o
+transformador do addon, e o reparo é aplicado na próxima inicialização do jogo.
 
 `compile-helper.py` exporta as classes novas em `build/payload/`. As assinaturas de API
 geradas em `build/` são apenas auxiliares de compilação e **não devem acompanhar um
@@ -93,8 +101,8 @@ Para montar o patch local Silver sobre o JAR que já tem os dois rituais corrigi
 aplique `PatchSilverOrb` em `ItemResource`, substitua o auxiliar do portal e acrescente
 o auxiliar do item, ambos de `build/payload/`. Mescle as duas novas mensagens dos
 arquivos em `resources/` com as traduções existentes, preservando as outras chaves.
-Não inclua os stubs. O cliente e o servidor precisam do AM2.5 CR3 para sincronizar
-e exibir corretamente os pontos Silver.
+Não inclua os stubs. Na manutenção atual, o cliente e o servidor precisam do AM2.5
+CR4 para aplicar a regra de compras somente de talentos e exibir os pontos Silver.
 
 ## Colaboração
 
