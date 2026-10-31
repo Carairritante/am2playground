@@ -3,6 +3,26 @@
 Registro publicado em 31 de outubro de 2026. Os resultados abaixo são da sessão
 local de manutenção; não são resultados de CI deste fork.
 
+## Progressão avançada — AM2.5 CR5
+
+Passaram no servidor Forge com as APIs reais de Botania e Witchery:
+
+- World Fusion obrigatório para os sete alvos; Mana Link isento dessa exigência.
+- Fronteiras de nível mágico de cada parte e guardiões pessoais corretos.
+- Coven com duas bruxas recusado e com três aceito.
+- 199.999 de mana recusados e 200.000 aceitos; soma de inventário e Baubles.
+- Orb bloqueada preserva item e pontos; orb apta ensina e consome corretamente.
+- Partes em estágios separados, mana insuficiente e evento cancelado não descobrem.
+- Sete descobertas e evento real de conjuração; repetição não gera pontos livres.
+- Descobertas não gastam a mana de Botania nem removem bruxas do coven.
+- Consagração uma vez, consumo exato das duas oferendas extras e persistência.
+- World Fusion original realizado normalmente; repetição incompleta preserva
+  círculo e reagentes; repetição apta realiza a consagração e consome os materiais.
+
+Testes de XML verificam preservação, idempotência, capítulo desbloqueado e ausência
+das combinações no Compendium. O teste do pacote e os ensaios anteriores de portal,
+orb de um ponto, regeneração e caldeirão foram executados novamente.
+
 ## Orb do portal: somente um ponto cinza
 
 A recompensa mais recente substitui os extras descritos nas seções históricas.

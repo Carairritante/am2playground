@@ -1,6 +1,7 @@
 """Compile the new helper; API signatures are compile-only, never shipped."""
 from pathlib import Path
 import argparse, shutil, subprocess
+import os
 
 STUBS = {'airburn/am2playground/compat/PGCompat.java': 'package airburn.am2playground.compat; public class '
                                                'PGCompat { public static boolean bloodmagicLoaded; '
@@ -45,9 +46,11 @@ STUBS = {'airburn/am2playground/compat/PGCompat.java': 'package airburn.am2playg
                                                                      '{}'}
 
 STUBS.update({
+ 'am2/api/spell/component/interfaces/IRitualInteraction.java': 'package am2.api.spell.component.interfaces; public interface IRitualInteraction {}',
+ 'am2/api/events/WorldFusionEvent.java': 'package am2.api.events; public class WorldFusionEvent extends cpw.mods.fml.common.eventhandler.Event {public net.minecraft.world.World world;public net.minecraft.entity.EntityLivingBase caster;public am2.api.spell.component.interfaces.IRitualInteraction ritual;public int x,y,z;public boolean completed;}',
  'airburn/am2playground/items/PGItems.java': 'package airburn.am2playground.items; public class PGItems {public static net.minecraft.item.Item resource; public static net.minecraft.item.ItemStack whiteOrbBloodBoss;}',
  'net/minecraft/item/Item.java': 'package net.minecraft.item; public class Item {}',
- 'cpw/mods/fml/common/eventhandler/Event.java': 'package cpw.mods.fml.common.eventhandler; public class Event {}',
+ 'cpw/mods/fml/common/eventhandler/Event.java': 'package cpw.mods.fml.common.eventhandler; public class Event {public void setCanceled(boolean value){} public boolean isCanceled(){return false;}}',
  'cpw/mods/fml/common/eventhandler/EventBus.java': 'package cpw.mods.fml.common.eventhandler; public class EventBus {public boolean post(Event event){return false;} }',
  'net/minecraftforge/common/MinecraftForge.java': 'package net.minecraftforge.common; public class MinecraftForge {public static cpw.mods.fml.common.eventhandler.EventBus EVENT_BUS;}',
  'airburn/am2playground/event/events/AM2ManaRegenPlayerEvent.java': 'package airburn.am2playground.event.events; public class AM2ManaRegenPlayerEvent extends cpw.mods.fml.common.eventhandler.Event { public int regenTicks; public static class ArmorMaterial extends AM2ManaRegenPlayerEvent {public ArmorMaterial(net.minecraft.entity.player.EntityPlayer p,int t){}} public static class SkillData extends AM2ManaRegenPlayerEvent {public SkillData(net.minecraft.entity.player.EntityPlayer p,int t){}} public static class ArmorInfusion extends AM2ManaRegenPlayerEvent {public ArmorInfusion(net.minecraft.entity.player.EntityPlayer p,int t){}} }',
@@ -67,6 +70,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--javac', default='javac')
     parser.add_argument('--asm', default=str(Path(__file__).resolve().parent / 'build/dependencies/asm-all-5.0.3.jar'))
+    parser.add_argument('--forge', default=str(Path(__file__).resolve().parent / 'build/dependencies/forge-1.7.10-1614.jar'))
     args = parser.parse_args()
     root = Path(__file__).resolve().parent
     build = root / 'build'
@@ -81,10 +85,12 @@ def main():
         'airburn/am2playground/compat/thaumcraft/PGRitualPortalRewards',
         'airburn/am2playground/items/PGSilverOrbRewards',
         'airburn/am2playground/preloader/ManaRegenTransformFix',
-        'airburn/am2playground/utils/ManaRegenEvents']]
+        'airburn/am2playground/utils/ManaRegenEvents',
+        'airburn/am2playground/progression/SilverProgressionRules',
+        'airburn/am2playground/progression/SilverProgression']]
     sources.extend(str(root / 'src' / helper.with_suffix('.java')) for helper in helpers)
     classes = build / 'compile-only-classes'
-    subprocess.run([args.javac, '--release', '8', '-cp', args.asm, '-d', str(classes), *sources], check=True)
+    subprocess.run([args.javac, '--release', '8', '-cp', os.pathsep.join([args.asm,args.forge]), '-d', str(classes), *sources], check=True)
     for helper in helpers:
         payload = build / 'payload' / helper.with_suffix('.class')
         payload.parent.mkdir(parents=True, exist_ok=True)

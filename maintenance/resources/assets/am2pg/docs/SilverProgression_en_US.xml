@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<silverProgression language="en_US">
+  <guides>
+    <guide id="am2pg_advanced_silver" unlocked="true" order="25">
+      <name>Advanced Silver Requirements</name>
+      <desc>These topics describe only the additional requirements for advanced Silver discoveries. The discovery combinations remain a mystery for you to investigate. !l Complete the Ritual of World Fusion personally, then satisfy the conditions for the advanced part you seek. Select a topic below for its requirements. !p #5Learning and special rewards#0 !l The requirements also apply when a special orb or an existing event would teach an advanced part. Keep an orb for later if its restricted contents cannot yet be learned. !l Once the part is learned, you do not need to repeat its initiation, challenge, mana reserve or coven check for every cast. Its original effects and normal casting costs still apply. !l Silver points buy talents only. The ritual portal's marked orb grants exactly one Silver point, without colored points or skills.</desc>
+      <relatedEntries>world_fusion,ManaLink,Level,Nullify,CovenConnection,FloweringNature,Diabolic,Ethereal,Sacrament</relatedEntries>
+      <subitem id="am2pg_silver_initiation" unlocked="true">
+        <name>Initiation: World Fusion</name>
+        <desc>#5World Fusion#0 !l Mana Link remains available before this initiation. Its own discovery is not described here. !l Use Mana Link on the emerald-block core of the completed World Fusion structure with its normal reagents. The original World Fusion entry shows the structure and ingredients. !l The connection belongs to the player who completes the ritual; another player's ritual does not initiate you. It is saved with the character. Keeping the ritual structure standing is not a continuous requirement.</desc>
+        <relatedEntries>world_fusion,ManaLink</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_level" unlocked="true">
+        <name>Level: additional requirements</name>
+        <desc>Complete World Fusion personally and reach AM2 magic level 45 or higher. !l This is the AM2 magic level, not the green Minecraft experience level. The discovery combination is not revealed here.</desc>
+        <relatedEntries>Level</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_nullify" unlocked="true">
+        <name>Nullify: additional requirements</name>
+        <desc>Complete World Fusion personally, reach AM2 magic level 50 and have a recorded personal victory over the Ender Guardian. !l Possessing a boss drop obtained by another player does not replace your own victory record. The discovery combination is not revealed here.</desc>
+        <relatedEntries>Nullify</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_coven" unlocked="true">
+        <name>Coven Connection: additional requirements</name>
+        <desc>Witchery must be present. Complete World Fusion personally, reach AM2 magic level 50 and have at least three witches in your own Witchery coven. !l Nearby witches and witches belonging to another player do not satisfy this requirement. Coven membership is checked when learning; the witches are not consumed. Existing special rewards and the coven-witch learning event must also respect these requirements. !l After learning, the modifier's original strength still depends on your current coven. The discovery combination is not revealed here.</desc>
+        <relatedEntries>CovenConnection</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_flowering" unlocked="true">
+        <name>Flowering Nature: additional requirements</name>
+        <desc>Botania must be present. Complete World Fusion personally, reach AM2 magic level 50 and carry at least 200,000 Botania mana in eligible mana-containing items in your inventory or equipped Baubles slots. !l A mana pool placed in the world does not count as carried mana. The reserve is checked but not spent by this discovery. Existing special orbs must also respect these requirements. !l After learning, the modifier's original strength still depends on your current carried Botania mana. The discovery combination is not revealed here.</desc>
+        <relatedEntries>FloweringNature</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_diabolic" unlocked="true">
+        <name>Diabolic: additional requirements</name>
+        <desc>Complete World Fusion personally, reach AM2 magic level 65, have a recorded personal victory over the Fire Guardian and perform the discovery in the Nether. !l The dimension requirement applies when learning, not to every later cast. The modifier retains its original behavior in every dimension after learning. The discovery combination is not revealed here.</desc>
+        <relatedEntries>Diabolic</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_ethereal" unlocked="true">
+        <name>Ethereal: additional requirements</name>
+        <desc>Complete World Fusion personally, reach AM2 magic level 70 and perform the discovery in the End. !l The dimension requirement applies when learning, not to every later cast. The modifier retains its original behavior in every dimension after learning. The discovery combination is not revealed here.</desc>
+        <relatedEntries>Ethereal</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_consecration" unlocked="true">
+        <name>Final Consecration</name>
+        <desc>#5Preparation#0 !l Complete World Fusion personally, reach AM2 magic level 90 and learn both Diabolic and Ethereal. !l Prepare the World Fusion structure again around an emerald-block core. Supply its full normal reagent set as dropped items as in the original ritual. Carry one Nether Star and one Void Paradox in your inventory as the extra offerings. Cast Mana Link on the core to complete your personal final consecration. !l The extra offerings are consumed only when consecration succeeds. This ceremony is needed once; an already consecrated player does not spend those offerings again. The consecration does not itself teach Sacrament: its discovery must still be made afterwards. This entry does not reveal that combination.</desc>
+        <relatedEntries>world_fusion,ManaLink,Diabolic,Ethereal,Sacrament</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_sacrament" unlocked="true">
+        <name>Sacrament: additional requirements</name>
+        <desc>Complete World Fusion personally, reach AM2 magic level 90, learn Diabolic and Ethereal, and complete final consecration. !l Read Final Consecration in this guide for the ritual requirements. Learning Sacrament does not craft the finished spell; its normal altar ingredients and casting cost still apply afterwards. The discovery combination is not revealed here.</desc>
+        <relatedEntries>Sacrament,Diabolic,Ethereal</relatedEntries>
+      </subitem>
+    </guide>
+  </guides>
+  <requirements>
+    <entry id="Level">Personal World Fusion and AM2 magic level 45. The discovery combination is not revealed. See Advanced Silver Requirements in Guides.</entry>
+    <entry id="Nullify">Personal World Fusion, AM2 magic level 50 and a recorded personal Ender Guardian victory. The discovery combination is not revealed. See Advanced Silver Requirements in Guides.</entry>
+    <entry id="CovenConnection">Witchery, personal World Fusion, AM2 magic level 50 and at least three witches in your own coven. The coven is checked, not consumed. Existing event and special-orb learning also require this progression. The discovery combination is not revealed. See Advanced Silver Requirements in Guides.</entry>
+    <entry id="FloweringNature">Botania, personal World Fusion, AM2 magic level 50 and at least 200,000 carried Botania mana in eligible inventory or Baubles items. World-placed pools do not count. The reserve is checked, not consumed. The discovery combination is not revealed. See Advanced Silver Requirements in Guides.</entry>
+    <entry id="Diabolic">Personal World Fusion, AM2 magic level 65, a recorded personal Fire Guardian victory, and learning in the Nether. The dimension is required for learning, not every later cast. The discovery combination is not revealed. See Advanced Silver Requirements in Guides.</entry>
+    <entry id="Ethereal">Personal World Fusion, AM2 magic level 70 and learning in the End. The dimension is required for learning, not every later cast. The discovery combination is not revealed. See Advanced Silver Requirements in Guides.</entry>
+    <entry id="Sacrament">Personal World Fusion, AM2 magic level 90, Diabolic and Ethereal learned, and final consecration completed. The discovery combination is not revealed. See Advanced Silver Requirements in Guides for the consecration ritual.</entry>
+  </requirements>
+</silverProgression>

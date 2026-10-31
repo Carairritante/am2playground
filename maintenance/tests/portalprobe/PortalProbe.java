@@ -132,6 +132,7 @@ public class PortalProbe {
    if(((Number)call(dataPlayer,"getSpellPoints",silver)).intValue()!=purchaseBefore-1 || !Boolean.TRUE.equals(staticCall("airburn.am2playground.utils.helpers.PGLearnHelper","isSkillKnown",player,talent)))throw new AssertionError("Talent purchase failed");
    log.add("SILVER_SPENT_ON_TALENT=PASS");
    int discoveryBefore=((Number)call(dataPlayer,"getSpellPoints",silver)).intValue();
+   props.getClass().getField("hasRitual").setBoolean(props,true);call(props,"setMagicLevel",45);
    for(String name:new String[]{"level","novaVortex"})
     staticCall("airburn.am2playground.utils.helpers.PGLearnHelper","learnSkill",player,field("airburn.am2playground.spell.PGSpells",name));
    if(((Number)call(dataPlayer,"getSpellPoints",silver)).intValue()!=discoveryBefore)throw new AssertionError("Special reward consumed free talent points");

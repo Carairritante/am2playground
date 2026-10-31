@@ -6,6 +6,28 @@ oficial do mod. Veja a [declaração de participação](AI_DISCLOSURE.md).
 
 ## Escopo e arquivos
 
+A versão atual acrescenta descobertas avançadas com iniciação pessoal World Fusion,
+nível mágico e desafios por habilidade. Nullify exige o Ender Guardian; Flowering
+Nature verifica 200.000 de mana carregada e Coven Connection verifica três bruxas
+do coven real. As consultas não alteram Botania nem Witchery.
+
+O Compendium mostra somente requisitos extras, em um Guia acessível desde o início
+e nas entradas das sete partes. As combinações não são publicadas no livro.
+Orbs com habilidades pendentes são bloqueadas antes de qualquer consumo ou ponto.
+Requisitos de aquisição não são exigidos novamente a cada conjuração depois de aprender.
+Mana Link e os desbloqueios originais necessários à iniciação continuam disponíveis.
+
+Esta versão requer AM2.5 CR5 para o evento de extensão do ritual. A consagração
+final repete a estrutura e os reagentes normais de World Fusion, com uma Nether
+Star e um Void Paradox adicionais no inventário. A iniciação original não muda.
+
+- `src/PatchProgression.java`: hooks de inicialização, conjuração, aprendizado e uso de orb.
+- `src/airburn/am2playground/progression/`: regras e coordenação da progressão.
+- `merge_compendium.py` e `resources/assets/am2pg/docs/`: mesclagem de requisitos
+  próprios ao compêndio local, sem incluir o corpo original no fork público.
+- `tests/progressionprobe/`: fronteiras de requisitos, sete descobertas, consumo
+  de orbs e realização dos dois rituais em ambiente descartável.
+
 A manutenção mais recente corrige um ciclo infinito nos eventos de regeneração
 de mana, reproduzido após aprender Mana Regen Archmage. O AM2.5 CR4 associado
 reserva os pontos Silver livres para talentos; magias e modificadores continuam
