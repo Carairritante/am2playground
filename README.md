@@ -4,6 +4,21 @@
 
 # AM2PlayGround
 
+## Manutenção experimental deste fork
+
+Fork de recursos mantido por [Carairritante](https://github.com/Carairritante).
+A branch [`correcoes`](https://github.com/Carairritante/am2playground/tree/correcoes)
+acrescenta [ferramentas e testes de compatibilidade escritos nesta manutenção](maintenance/README.md),
+com participação substancial do OpenAI Codex. Ela está preparada para receber PRs
+de Akashiic e de outros colaboradores para essa branch.
+
+O repositório original disponibiliza recursos e traduções. Este fork não contém o
+código-fonte completo nem um JAR modificado do addon. As ferramentas novas não
+alteram as permissões ou os direitos do autor sobre o mod e os recursos originais.
+Os créditos e o README original foram preservados abaixo.
+
+---
+
 [![Code license (CC BY-NC-ND 3.0)](https://img.shields.io/badge/License-CC%20BY--NC--ND%203.0-blue.svg?style=flat-square)](https://creativecommons.org/licenses/by-nc-nd/3.0)
 [![CurseForge](https://cf.way2muchnoise.eu/title/am2playground.svg)](https://www.curseforge.com/minecraft/mc-mods/am2playground)
 [![Modrinth](https://img.shields.io/modrinth/dt/am2playground?label=Modrinth&logo=Modrinth&style=flat-square)](https://modrinth.com/mod/am2playground)
