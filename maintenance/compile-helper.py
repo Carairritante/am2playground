@@ -45,6 +45,10 @@ STUBS = {'airburn/am2playground/compat/PGCompat.java': 'package airburn.am2playg
                                                                      '{}'}
 
 STUBS.update({
+ 'cpw/mods/fml/common/eventhandler/Event.java': 'package cpw.mods.fml.common.eventhandler; public class Event {}',
+ 'cpw/mods/fml/common/eventhandler/EventBus.java': 'package cpw.mods.fml.common.eventhandler; public class EventBus {public boolean post(Event event){return false;} }',
+ 'net/minecraftforge/common/MinecraftForge.java': 'package net.minecraftforge.common; public class MinecraftForge {public static cpw.mods.fml.common.eventhandler.EventBus EVENT_BUS;}',
+ 'airburn/am2playground/event/events/AM2ManaRegenPlayerEvent.java': 'package airburn.am2playground.event.events; public class AM2ManaRegenPlayerEvent extends cpw.mods.fml.common.eventhandler.Event { public int regenTicks; public static class ArmorMaterial extends AM2ManaRegenPlayerEvent {public ArmorMaterial(net.minecraft.entity.player.EntityPlayer p,int t){}} public static class SkillData extends AM2ManaRegenPlayerEvent {public SkillData(net.minecraft.entity.player.EntityPlayer p,int t){}} public static class ArmorInfusion extends AM2ManaRegenPlayerEvent {public ArmorInfusion(net.minecraft.entity.player.EntityPlayer p,int t){}} }',
  'net/minecraftforge/common/util/FakePlayer.java': 'package net.minecraftforge.common.util; public class FakePlayer extends net.minecraft.entity.player.EntityPlayer {}',
  'net/minecraft/entity/player/EntityPlayer.java': 'package net.minecraft.entity.player; public class EntityPlayer extends net.minecraft.entity.EntityLivingBase { public void func_145747_a(net.minecraft.util.IChatComponent message){} }',
  'net/minecraft/item/ItemStack.java': 'package net.minecraft.item; public class ItemStack { public int field_77994_a; public ItemStack func_77946_l(){return null;} public boolean func_77942_o(){return false;} public net.minecraft.nbt.NBTTagCompound func_77978_p(){return null;} }',
@@ -60,6 +64,7 @@ STUBS.update({
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--javac', default='javac')
+    parser.add_argument('--asm', default=str(Path(__file__).resolve().parent / 'build/dependencies/asm-all-5.0.3.jar'))
     args = parser.parse_args()
     root = Path(__file__).resolve().parent
     build = root / 'build'
@@ -70,20 +75,19 @@ def main():
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(text, encoding='utf-8')
         sources.append(str(target))
-    helper = Path('airburn/am2playground/compat/thaumcraft/PGRitualPortalRewards')
-    sources.append(str(root / 'src' / helper.with_suffix('.java')))
-    item_helper = Path('airburn/am2playground/items/PGSilverOrbRewards')
-    sources.append(str(root / 'src' / item_helper.with_suffix('.java')))
+    helpers = [Path(name) for name in [
+        'airburn/am2playground/compat/thaumcraft/PGRitualPortalRewards',
+        'airburn/am2playground/items/PGSilverOrbRewards',
+        'airburn/am2playground/preloader/ManaRegenTransformFix',
+        'airburn/am2playground/utils/ManaRegenEvents']]
+    sources.extend(str(root / 'src' / helper.with_suffix('.java')) for helper in helpers)
     classes = build / 'compile-only-classes'
-    subprocess.run([args.javac, '--release', '8', '-d', str(classes), *sources], check=True)
-    payload = build / 'payload' / helper.with_suffix('.class')
-    payload.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(classes / helper.with_suffix('.class'), payload)
-    item_payload = build / 'payload' / item_helper.with_suffix('.class')
-    item_payload.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(classes / item_helper.with_suffix('.class'), item_payload)
-    print('Payload:', payload)
-    print('Payload:', item_payload)
+    subprocess.run([args.javac, '--release', '8', '-cp', args.asm, '-d', str(classes), *sources], check=True)
+    for helper in helpers:
+        payload = build / 'payload' / helper.with_suffix('.class')
+        payload.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(classes / helper.with_suffix('.class'), payload)
+        print('Payload:', payload)
     print('Only these payload classes may be packaged; do not ship compile-only API stubs.')
 
 if __name__ == '__main__':

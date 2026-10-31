@@ -38,10 +38,10 @@ def main():
     patchers = BUILD / 'patchers'
     subprocess.run(['javac', '--release', '8', '-cp', str(asm), '-d', str(patchers),
         str(ROOT / 'src/PatchCauldron.java'), str(ROOT / 'src/PatchPortal.java'),
-        str(ROOT / 'src/PatchSilverOrb.java')], check=True)
-    subprocess.run(['javac', '--release', '8', '-cp', os.pathsep.join([str(forge), str(server)]),
+        str(ROOT / 'src/PatchSilverOrb.java'), str(ROOT / 'src/PatchManaRegen.java')], check=True)
+    subprocess.run(['javac', '--release', '8', '-cp', os.pathsep.join([str(forge), str(server), str(BUILD / 'compile-only-classes')]),
         '-d', str(BUILD / 'probes'), str(ROOT / 'tests/cauldronprobe/CauldronProbe.java'),
-        str(ROOT / 'tests/portalprobe/PortalProbe.java')], check=True)
+        str(ROOT / 'tests/portalprobe/PortalProbe.java'), str(ROOT / 'tests/regenprobe/RegenProbe.java')], check=True)
     dist = BUILD / 'dist'
     dist.mkdir(parents=True, exist_ok=True)
     output = dist / 'AM2PG-maintenance-tools.jar'
@@ -56,9 +56,11 @@ def main():
         for path in sorted((ROOT / 'resources').rglob('*.lang')):
             jar.write(path, path.relative_to(ROOT / 'resources').as_posix())
     with zipfile.ZipFile(output) as jar:
-        expected = {'META-INF/MANIFEST.MF', 'PatchCauldron.class', 'PatchPortal.class', 'PatchSilverOrb.class',
+        expected = {'META-INF/MANIFEST.MF', 'PatchCauldron.class', 'PatchPortal.class', 'PatchSilverOrb.class', 'PatchManaRegen.class',
             'airburn/am2playground/compat/thaumcraft/PGRitualPortalRewards.class',
             'airburn/am2playground/items/PGSilverOrbRewards.class',
+            'airburn/am2playground/preloader/ManaRegenTransformFix.class',
+            'airburn/am2playground/utils/ManaRegenEvents.class',
             'assets/am2pg/lang/en_US.lang', 'assets/am2pg/lang/pt_BR.lang'}
         if set(jar.namelist()) != expected:
             raise RuntimeError('Unexpected classes packaged in tooling JAR')

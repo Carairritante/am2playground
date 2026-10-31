@@ -6,6 +6,19 @@ oficial do mod. Veja a [declaração de participação](AI_DISCLOSURE.md).
 
 ## Escopo e arquivos
 
+A manutenção mais recente corrige um ciclo infinito nos eventos de regeneração
+de mana, reproduzido após aprender Mana Regen Archmage. O AM2.5 CR4 associado
+reserva os pontos Silver livres para talentos; magias e modificadores continuam
+pelos seus métodos de descoberta ou recompensa especial.
+
+- `src/PatchManaRegen.java`: conecta o reparo à saída do transformador original.
+- `src/airburn/am2playground/preloader/ManaRegenTransformFix.java`: encaminha as
+  etapas canceladas para a próxima etapa, preservando a duração ajustada.
+- `src/airburn/am2playground/utils/ManaRegenEvents.java`: transporta cancelamento
+  e duração separadamente pelo sinal do retorno; evita duração zero/negativa.
+- `tests/regenprobe/RegenProbe.java`: reproduz o ciclo anterior e verifica Archmage,
+  cancelamento em cada etapa, duração zero e a supressão de regeneração do Atronach.
+
 - `src/PatchCauldron.java`: acrescenta o registro das quatro runas exigidas pela
   receita de Void Paradox, reutilizando o registrador idempotente do addon.
 - `src/PatchPortal.java`: marca portais criados pela fábrica do ritual e acrescenta

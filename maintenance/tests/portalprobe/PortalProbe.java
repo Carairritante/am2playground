@@ -91,14 +91,28 @@ public class PortalProbe {
    if(Boolean.TRUE.equals(staticCall("airburn.am2playground.items.PGSilverOrbRewards","grantSilver",twice,player)))throw new AssertionError("Empty stack rewarded");
    log.add("STACKED_ORBS_ONE_POINT_PER_ITEM=PASS");
    checkSync(dataPlayer,player,world,log);
-   Object level=field("airburn.am2playground.spell.PGSpells","level");
    Object trees=field("am2.spell.SkillTreeManager","instance");
-   Object entry=call(trees,"getSkillTreeEntry",level);
-   if(!"CAN_LEARN".equals(call(dataPlayer,"getLearnState",entry,player).toString()))throw new AssertionError("Level is not purchasable");
+   for(String name:new String[]{"level","novaVortex"}) {
+    Object part=field("airburn.am2playground.spell.PGSpells",name),entry=call(trees,"getSkillTreeEntry",part);
+    if(!"CANNOT_LEARN".equals(call(dataPlayer,"getLearnState",entry,player).toString()))throw new AssertionError("Silver spell remains purchasable: "+name);
+    int pointsBefore=((Number)call(dataPlayer,"getSpellPoints",silver)).intValue();
+    buy(dataPlayer,player,part);
+    if(Boolean.TRUE.equals(staticCall("airburn.am2playground.utils.helpers.PGLearnHelper","isSkillKnown",player,part)) || ((Number)call(dataPlayer,"getSpellPoints",silver)).intValue()!=pointsBefore)throw new AssertionError("Server allowed a Silver spell purchase: "+name);
+   }
+   log.add("SILVER_SPELLS_AND_MODIFIERS_BLOCKED_UI_AND_SERVER=PASS");
+   Object talent=field("airburn.am2playground.spell.PGSpells","advancedSpellscribing");
+   Object entry=call(trees,"getSkillTreeEntry",talent);
+   if(!"CAN_LEARN".equals(call(dataPlayer,"getLearnState",entry,player).toString()))throw new AssertionError("Silver talent is not purchasable");
    int purchaseBefore=((Number)call(dataPlayer,"getSpellPoints",silver)).intValue();
-   call(dataPlayer,"learn",level);
-   if(((Number)call(dataPlayer,"getSpellPoints",silver)).intValue()!=purchaseBefore-1 || !Boolean.TRUE.equals(staticCall("airburn.am2playground.utils.helpers.PGLearnHelper","isSkillKnown",player,level)))throw new AssertionError("Level purchase failed");
-   log.add("SILVER_SPENT_ON_LEVEL=PASS");
+   buy(dataPlayer,player,talent);
+   if(((Number)call(dataPlayer,"getSpellPoints",silver)).intValue()!=purchaseBefore-1 || !Boolean.TRUE.equals(staticCall("airburn.am2playground.utils.helpers.PGLearnHelper","isSkillKnown",player,talent)))throw new AssertionError("Talent purchase failed");
+   log.add("SILVER_SPENT_ON_TALENT=PASS");
+   int discoveryBefore=((Number)call(dataPlayer,"getSpellPoints",silver)).intValue();
+   for(String name:new String[]{"level","novaVortex"})
+    staticCall("airburn.am2playground.utils.helpers.PGLearnHelper","learnSkill",player,field("airburn.am2playground.spell.PGSpells",name));
+   if(((Number)call(dataPlayer,"getSpellPoints",silver)).intValue()!=discoveryBefore)throw new AssertionError("Special reward consumed free talent points");
+   for(String name:new String[]{"level","novaVortex"})if(!Boolean.TRUE.equals(staticCall("airburn.am2playground.utils.helpers.PGLearnHelper","isSkillKnown",player,field("airburn.am2playground.spell.PGSpells",name))))throw new AssertionError("Special reward blocked: "+name);
+   log.add("DIRECT_DISCOVERY_AND_SPECIAL_REWARDS_PRESERVED=PASS");
    checkSync(dataPlayer,player,world,log);
   }
   Object template=field("airburn.am2playground.items.PGItems","whiteOrbBloodBoss"),tag=call(template,"func_77978_p");
@@ -111,6 +125,14 @@ public class PortalProbe {
  }
  static void useOrb(Object stack,Object world,Object player)throws Exception {
   Class.forName("net.minecraft.item.Item").getMethod("func_77659_a",Class.forName("net.minecraft.item.ItemStack"),Class.forName("net.minecraft.world.World"),Class.forName("net.minecraft.entity.player.EntityPlayer")).invoke(call(stack,"func_77973_b"),stack,world,player);
+ }
+ static void buy(Object data,Object player,Object part)throws Exception {
+  java.io.ByteArrayOutputStream bytes=new java.io.ByteArrayOutputStream();
+  java.io.DataOutputStream packet=new java.io.DataOutputStream(bytes);
+  packet.writeByte(1);packet.writeInt(((Number)call(player,"func_145782_y")).intValue());
+  packet.writeInt(((Number)call(field("am2.spell.SkillManager","instance"),"getShiftedPartID",part)).intValue());
+  packet.writeInt(Class.forName("am2.api.spell.component.interfaces.ISpellShape").isInstance(part)?0:Class.forName("am2.api.spell.component.interfaces.ISpellComponent").isInstance(part)?1:Class.forName("am2.api.spell.component.interfaces.ISpellModifier").isInstance(part)?2:3);
+  call(data,"handlePacketData",bytes.toByteArray());
  }
  static void checkSync(Object data,Object player,Object world,List<String> log)throws Exception {
   call(data,"setFullSync");

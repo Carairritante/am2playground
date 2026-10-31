@@ -3,6 +3,30 @@
 Registro publicado em 31 de outubro de 2026. Os resultados abaixo são da sessão
 local de manutenção; não são resultados de CI deste fork.
 
+## Travamento de regeneração e compras — AM2.5 CR4
+
+O ciclo foi reproduzido em processo descartável com a versão anterior:
+`ORIGINAL_ARCHMAGE_INFINITE_LOOP_REPRODUCED=PASS`.
+Com o reparo, a mesma chamada retorna e preserva a redução de duração do Archmage,
+sem aplicar também a redução de Mana Regen III.
+
+```text
+ARCHMAGE_RETURNS_WITH_45_PERCENT_DURATION=PASS
+CANCELED_ARMORMATERIAL_FORWARD_AND_DURATION=PASS
+CANCELED_SKILLDATA_FORWARD_AND_DURATION=PASS
+CANCELED_ARMORINFUSION_FORWARD_AND_DURATION=PASS
+ZERO_DURATION_FINITE_AND_NO_LOOP=PASS
+ATRONACH_REGEN_SUPPRESSION_PRESERVED=PASS
+MANA_REGEN_FIX=PASS
+SILVER_SPELLS_AND_MODIFIERS_BLOCKED_UI_AND_SERVER=PASS
+SILVER_SPENT_ON_TALENT=PASS
+DIRECT_DISCOVERY_AND_SPECIAL_REWARDS_PRESERVED=PASS
+```
+
+O portal, o consumo da orb, o ponto Silver extra e o caldeirão de Void Paradox
+passaram novamente. A política CR4 substitui a compra livre de habilidades testada
+na CR3 abaixo; habilidades já salvas não são apagadas.
+
 ## Recompensa Silver livre — AM2.5 CR3
 
 Em servidor Forge descartável, o portal foi morto por um jogador simulado e a orb
