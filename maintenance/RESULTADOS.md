@@ -3,6 +3,25 @@
 Registro publicado em 31 de outubro de 2026. Os resultados abaixo são da sessão
 local de manutenção; não são resultados de CI deste fork.
 
+## Regressão adicional — AM2.5 CR6
+
+Em 31/10/2026, o AM2.5 CR6 foi compilado com o novo Giz do Arquiteto Arcano.
+O JAR advanced-silver-progression do Playground permaneceu idêntico ao já testado.
+Quatro ensaios de servidor Forge em mundos descartáveis passaram novamente:
+
+```text
+ADVANCED_SILVER_PROGRESSION=PASS
+PORTAL_PATCH=PASS
+MANA_REGEN_FIX=PASS
+PATCHED_INTEGRATION=PASS
+```
+
+Isso inclui os requisitos pessoais e as sete descobertas, World Fusion original,
+consagração final, orb de um ponto Silver, regeneração de mana e Void Paradox.
+O giz foi validado separadamente no AM2.5: 30 rituais em quatro orientações,
+montagem exclusiva do criativo e conferência sem consumo. A aparência do cliente
+continua dependendo de conferência visual dentro do jogo.
+
 ## Progressão avançada — AM2.5 CR5
 
 Passaram no servidor Forge com as APIs reais de Botania e Witchery:

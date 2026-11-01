@@ -17,7 +17,10 @@ Orbs com habilidades pendentes são bloqueadas antes de qualquer consumo ou pont
 Requisitos de aquisição não são exigidos novamente a cada conjuração depois de aprender.
 Mana Link e os desbloqueios originais necessários à iniciação continuam disponíveis.
 
-Esta versão requer AM2.5 CR5 para o evento de extensão do ritual. A consagração
+Esta versão requer AM2.5 CR5 ou mais recente para o evento de extensão do ritual.
+As quatro regressões também passaram com AM2.5 CR6, sem alteração do JAR do addon.
+O Giz do Arquiteto Arcano pertence ao [fork do AM2.5](https://github.com/Carairritante/ArsMagica2/tree/correcoes),
+onde estão suas fontes e instruções. A consagração
 final repete a estrutura e os reagentes normais de World Fusion, com uma Nether
 Star e um Void Paradox adicionais no inventário. A iniciação original não muda.
 
@@ -131,7 +134,7 @@ aplique `PatchSilverOrb` em `ItemResource`, substitua o auxiliar do portal e acr
 o auxiliar do item, ambos de `build/payload/`. Mescle as duas novas mensagens dos
 arquivos em `resources/` com as traduções existentes, preservando as outras chaves.
 Não inclua os stubs. Na manutenção atual, o cliente e o servidor precisam do AM2.5
-CR5 para a progressão atual e o evento de extensão da consagração.
+CR5 ou mais recente para a progressão atual e o evento de extensão da consagração.
 
 ## Colaboração
 
