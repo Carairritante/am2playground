@@ -6,6 +6,8 @@
 
 ## Manutenção experimental deste fork
 
+[Slide antes/depois e histórico cronológico das atualizações](maintenance/docs/RESUMO-ANTES-DEPOIS.md)
+
 Fork de recursos mantido por [Carairritante](https://github.com/Carairritante).
 A branch [`correcoes`](https://github.com/Carairritante/am2playground/tree/correcoes)
 acrescenta [ferramentas e testes de compatibilidade escritos nesta manutenção](maintenance/README.md),
