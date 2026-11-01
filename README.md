@@ -6,6 +6,8 @@
 
 ## Manutenção experimental deste fork
 
+[Tradução completa dos Compêndios em português e pacote de recursos](translations/README.pt-BR.md)
+
 [Slide antes/depois e histórico cronológico das atualizações](maintenance/docs/RESUMO-ANTES-DEPOIS.md)
 
 Fork de recursos mantido por [Carairritante](https://github.com/Carairritante).

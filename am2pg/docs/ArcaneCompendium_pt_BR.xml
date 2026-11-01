@@ -1,0 +1,687 @@
+<?xml version='1.0' encoding='utf-8'?>
+<compendium>
+  <shapes>
+    <shape id="Missile">
+      <name>Míssil</name>
+      <desc>Ao perceber que Projétil é uma das formas mais convenientes, você também nota comportamentos estranhos em certas situações. Para ter mais controle, inventou Míssil: funciona quase como Projétil, mas com mira automática embutida e algumas funções extras.</desc>
+      <modifiedBy>SPEED,GRAVITY,BOUNCE,DURATION,PIERCING,HOMING,TARGET_NONSOLID_BLOCKS</modifiedBy>
+    </shape>
+    <shape id="Multiply">
+      <name>Multiplicar</name>
+      <desc>Uma forma descoberta pelo Arquimago em outro universo. !l Divide a magia em três, acrescentando mais duas cópias por modificador de #5Ativações#0. Elas são lançadas num pequeno cone, cujo ângulo é ajustado pela roda do mouse. Funciona muito bem com projéteis, mas de maneira... estranha com outras formas. !p #4NEM TENTE#0 combinar #5Formação#0 e #5Multiplicar#0 em sequência. Sim, funciona como descrito e certamente será divertido, mas pode causar sérios problemas de desempenho muito rapidamente.</desc>
+      <modifiedBy>PROCS</modifiedBy>
+    </shape>
+    <shape id="Formation">
+      <name>Formação</name>
+      <desc>Uma forma descoberta pelo Arquimago em outro universo. !l Divide a magia em duas, acrescentando mais duas cópias por modificador de #5Ativações#0, formando um polígono perfeito ao seu redor, de maneira semelhante à Área de Efeito. Funciona bem com projéteis e de maneira... estranha com outras formas. Também oferece rotação da magia e, por isso, é considerada canalizada. !p #4NEM TENTE#0 combinar #5Formação#0 e #5Multiplicar#0 em sequência. Sim, funciona como descrito e certamente será divertido, mas pode causar sérios problemas de desempenho muito rapidamente.</desc>
+      <modifiedBy>PROCS</modifiedBy>
+    </shape>
+    <shape id="They">
+      <name>Eles</name>
+      <desc>Ou ELES VÃO SE ARREPENDER!.. Ou talvez você... !l Ativa uma magia em todas as entidades do mundo, fazendo com que elas próprias a conjurem como se fossem o conjurador. !p Mirar em Blocos Não Sólidos permite selecionar entidades não vivas, como carrinhos e molduras.</desc>
+      <modifiedBy>TARGET_NONSOLID_BLOCKS</modifiedBy>
+    </shape>
+    <shape id="Distant">
+      <name>Distante</name>
+      <desc>Se você pode se teletransportar até uma marca, por que não teletransportar... apenas suas magias? Nem todas as magias, porém, podem ser transportadas desse modo.</desc>
+    </shape>
+    <shape id="Spray">
+      <name>Dispersão</name>
+      <desc>Não basta dispersar e torcer! !d Por que mirar ou esperar o feixe se concentrar no alvo, se você pode espalhar o poder e liberá-lo como uma corrente caótica? !l Há desvantagens: a duração é muito curta, o alcance fica bastante reduzido e a precisão deixa a desejar. Portanto, usar de longe provavelmente não compensa. !l O raio de dispersão não tem restrições formais, mas pode ser ampliado estatisticamente com #5Raio#0 ou concentrado manualmente.</desc>
+      <modifiedBy>RADIUS,SPEED,GRAVITY,BOUNCE,DURATION,PIERCING,HOMING,TARGET_NONSOLID_BLOCKS</modifiedBy>
+    </shape>
+    <shape id="Contingency_Tick">
+      <name>Contingência: Tick</name>
+      <desc>Um presente trazido pelo Arquimago de um universo paralelo, onde também é conhecido como “Interruptor”, embora funcione de modo diferente. Mantém uma magia quase permanentemente enquanto houver mana suficiente. Há outras maneiras de conseguir isso, mas esta é mais controlada e passiva. !d Ativa-se a cada tick, consumindo mana pela conjuração e pela manutenção, e é cancelada automaticamente quando a reserva não basta.</desc>
+    </shape>
+    <shape id="Contingency_Delay">
+      <name>Contingência: Atraso</name>
+      <desc>Um presente trazido pelo Arquimago de um universo paralelo. Esta forma permite conjurar com atraso de maneira simples. !d Ativa-se uma única vez depois de uma espera, sem custo adicional de mana. O modificador #5Duração#0 amplia essa espera.</desc>
+      <modifiedBy>DURATION</modifiedBy>
+    </shape>
+    <shape id="Contingency_Mana">
+      <name>Contingência: Mana</name>
+      <desc>Mana é um dos recursos principais de muitos magos. Seria uma pena não ter um plano reserva quando ela acaba! Felizmente, preparar uma magia que se ative quando a mana cair a 10% não é tão difícil.</desc>
+    </shape>
+  </shapes>
+  <components>
+    <component id="Debug">
+      <name>Depurar</name>
+      <desc>Talvez ajude a obter informações sobre o mundo. Talvez não. Conjurar enquanto estiver agachado mostra o NBT, se existir.</desc>
+    </component>
+    <component id="Repair">
+      <name>Reparar</name>
+      <desc>A capacidade do guardião do fogo de queimar a durabilidade de armaduras é um incômodo. Encontrar equipamento inquebrável nem sempre é possível. Se magias conseguem quebrá-lo, por que não repará-lo? Depois de pesquisar, você descobriu que conseguem. É parecido com curar um ser vivo, só que em outro tipo de matéria. Também repara um item danificado na mão. O custo de mana não depende da quantidade de itens reparados, mas nada é gasto se não houver o que reparar. !l A durabilidade recuperada depende do modificador #5Poder de Cura#0.</desc>
+      <modifiedBy>HEALING</modifiedBy>
+    </component>
+    <component id="Trigger">
+      <name>Acionar</name>
+      <desc>Às vezes é útil imitar o toque dos dedos ou até a própria voz. !l Uma magia muito estranha, com muitas consequências esperadas que se contradizem.</desc>
+    </component>
+    <component id="VoidDamage">
+      <name>Dano do Vazio</name>
+      <desc>#8Sugestão de Ce'nos.#0 !l Uma magia antiga usada pelo Arquimago para destruir tudo de que não gostava. Descobriu-se que não era preciso ser arquimago para usá-la. O dano ignora armaduras, ao custo de muita mana para romper o espaço. Se usada sem cuidado, pode apagar certas coisas deste mundo para sempre. !d O que será que acontece com a rocha-mãe?</desc>
+      <modifiedBy>DAMAGE</modifiedBy>
+    </component>
+    <component id="Song">
+      <name>Canção</name>
+      <desc>Magia sonora pode parecer duvidosa, mas é muito útil. !l Cria uma fonte sonora semelhante a um bloco musical, capaz de distrair inimigos e entreter amigos. !l Para funcionar, exige ao menos um modificador de #5Nota#0 com o som desejado. !l O modificador #5Velocidade Acrescentada#0 aumenta o volume. !p Será que adicionar #5Dano#0 vai fazer seus tímpanos vibrarem de verdade? Divirta-se à moda de Noita!</desc>
+      <modifiedBy>SOUND,VELOCITY_ADDED</modifiedBy>
+    </component>
+    <component id="RandomDamage">
+      <name>Dano Aleatório</name>
+      <desc>#8Sugestão de Ce'nos.#0 !l Em geral, é mais uma brincadeira que uma magia séria de combate. !l Quando um fluxo descontrolado de energia mágica não pode ser ajustado e é simplesmente lançado no mundo, nada de bom pode acontecer. Você literalmente não sabe o que está conjurando, e o dano causado pode ser de qualquer tipo existente. !l Se isso não for um problema, funciona como outras magias de dano.</desc>
+      <modifiedBy>DAMAGE</modifiedBy>
+    </component>
+    <component id="ClearContingency">
+      <name>Limpar Contingência</name>
+      <desc>Contingências são ferramentas poderosas. Mas e se alguém aplicar uma condição indesejada em você, ou se o inimigo estiver protegido por uma condição traiçoeira? Normalmente seria preciso substituí-la por uma contingência sem efeito, às vezes do mesmo tipo, o que é inconveniente. !l Esta magia funciona como Dissipar, mas remove contingências em vez de efeitos de poção, sem sequer ativá-las. !p Dizem que ela anula mais coisas além de contingências...</desc>
+    </component>
+    <component id="NovaVortex">
+      <name>Vórtice Nova</name>
+      <desc>Estudando a anatomia dos #2Creepers de Mana#0, você aprendeu a concentrar mana num redemoinho. Não é mais fácil do que invocar um deles e fazê-lo explodir?</desc>
+    </component>
+    <component id="NetherIntervention">
+      <name>Intervenção do Nether</name>
+      <desc>Faz o mesmo que Intervenção do Ender, mas desta vez realmente leva você ao End. !d Por que isso, Mithion?</desc>
+    </component>
+    <component id="CrossdimensionalIntervention">
+      <name>Intervenção Interdimensional</name>
+      <desc>Neptune sagashite! !d Permite atravessar dimensões para retornar ao lugar onde a magia foi criada.</desc>
+    </component>
+    <component id="ManaConduction">
+      <name>Condução de Mana</name>
+      <desc>Às vezes falta tempo ou vontade para construir geradores de Etherium, embora você precise de energia com urgência. Como mago, sabe transformar a energia de sua fonte interna em Etherium, de modo semelhante ao obelisco. O processo é caro e não concentra muita energia de uma vez sem alguns truques. O modificador #5Poder de Efeito#0 pode resolver esse problema.</desc>
+      <modifiedBy>BUFF_POWER</modifiedBy>
+    </component>
+    <component id="Maximization">
+      <name>Maximização</name>
+      <desc>Eleva todos os efeitos ao nível 2. Também amplia a duração dos que tiverem menos de 32 segundos.</desc>
+      <modifiedBy>DURATION,BUFF_POWER</modifiedBy>
+    </component>
+    <component id="Fireworks">
+      <name>Fogos de Artifício</name>
+      <desc>Celebre datas especiais e aterrorize inimigos com fogos mágicos! !l O foguete usado na fabricação determina os efeitos da magia.</desc>
+    </component>
+    <component id="StealArmor">
+      <name>Roubar Armadura</name>
+      <desc>Em teoria, roubar armadura não deveria ser mais difícil que fazer alguém largar um item. Na prática, uma pequena descarga mágica não basta, e é preciso envolver o corpo inteiro, não apenas a mão. !l Foi necessário mudar um pouco a abordagem... em favor do teletransporte.</desc>
+    </component>
+    <component id="CrashToDesktop">
+      <name>Voltar para a Área de Trabalho</name>
+      <desc>Depois de um lançamento cheio de erros, magos espertos rapidamente aprenderam a usar esse poder a seu favor. !d Código de teclas: AAFW !l (#4O que você está jogando?#0)</desc>
+    </component>
+    <component id="Nullify">
+      <name>Anular</name>
+      <desc>Remove magias incômodas. !l Anular é 42% mais eficaz que as outras marcas líderes! !d Código de teclas: SE !l (#4O que você está jogando?#0) !p #5Requisitos Prateados Avançados#0 !l Fusão com o Mundo pessoal, nível mágico 50 do AM2 e vitória pessoal registrada contra o Guardião do Ender. A combinação de descoberta não é revelada. Veja Requisitos Prateados Avançados em Guias.</desc>
+      <modifiedBy>RADIUS</modifiedBy>
+    </component>
+    <component id="Collect">
+      <name>Coletar</name>
+      <desc>#8Sugestão de sonnylonglegs.#0 !l Há várias magias para matar inimigos à distância. !l Mas depois é preciso correr para pegar os itens e a experiência. Que horror! !l Isso levou à ideia de usar algo como #5Troca de Lugar#0 para trocar o ar pelos objetos desejados, colocando-os diretamente nos bolsos quando possível. !d Recolhe itens e experiência num raio de 1 bloco ao redor do ponto atingido, ampliável com #5Raio#0.</desc>
+      <modifiedBy>RADIUS</modifiedBy>
+    </component>
+    <component id="Collect" mod="Automagy" overrideCondition="always">
+      <name>Coletar</name>
+      <desc>#8Sugestão de sonnylonglegs.#0 !l Há várias magias para matar inimigos à distância. !l Mas depois é preciso correr para pegar os itens e a experiência. Que horror! !l Isso levou à ideia de usar as propriedades da #5Pérola da Avareza#0 para recolher os objetos desejados, colocando-os diretamente nos bolsos quando possível. !d Recolhe itens e experiência num raio de 1 bloco ao redor do ponto atingido, ampliável com #5Raio#0.</desc>
+      <modifiedBy>RADIUS</modifiedBy>
+    </component>
+    <component id="Chant">
+      <name>Entoar</name>
+      <desc>#8Sugestão de Hopeosity.#0 !l Gritar não resolve seus problemas, mas certamente faz os inimigos tremerem de medo. !l Independentemente da forma de aplicação, exibe no chat as mensagens registradas no livro usado na fabricação. !l Cada trecho separado por uma nova linha ou página é considerado uma mensagem distinta.</desc>
+    </component>
+    <component id="Manabolism">
+      <name>Manabolismo</name>
+      <desc>#8Sugestão de Hopeosity.#0 !l Concentre-se! !l Controle o fluxo de mana e a digestão! !l Misture essas correntes de energia! !l E torça para não vomitar! !l</desc>
+      <modifiedBy>HEALING</modifiedBy>
+    </component>
+    <component id="DropBaubles" mod="Baubles;aether_legacy;TConstruct">
+      <name>Largar Acessórios</name>
+      <desc>Agora que você entendeu como remover a armadura dos outros, retirar todos aqueles acessórios não deve ser tão difícil.</desc>
+    </component>
+    <component id="BloodDevastation" mod="AWWayofTime">
+      <name>Devastação Sanguínea</name>
+      <desc>Permite drenar #4LP#0 diretamente da #4Rede de LP#0 de outra pessoa.</desc>
+      <modifiedBy>HEALING</modifiedBy>
+    </component>
+    <component id="BloodVortex" mod="AWWayofTime">
+      <name>Vórtice de Sangue</name>
+      <desc>#8Sugestão de Sunconure11.#0 !l Faz chover sangue, reduzindo lentamente a vida de quem fica sob a chuva e tornando essas vítimas aptas à coleta de fragmentos de sangue.</desc>
+      <modifiedBy>DURATION,RADIUS</modifiedBy>
+    </component>
+    <component id="OuterDamage" mod="Thaumcraft">
+      <name>Dano Exterior</name>
+      <desc>Causa dano como um Guardião Sobrenatural. !l O dano básico aumenta conforme sua Distorção.</desc>
+      <modifiedBy>DAMAGE,BUFF_POWER</modifiedBy>
+    </component>
+    <component id="FluxDisease" mod="Thaumcraft">
+      <name>Doença de Fluxo</name>
+      <desc>Preenche uma região com fluxo, que pode provocar efeitos negativos ou contaminar líquidos.</desc>
+      <modifiedBy>DURATION,BUFF_POWER</modifiedBy>
+    </component>
+    <component id="Insight" mod="Thaumcraft">
+      <name>Discernimento</name>
+      <desc>Depois de sucumbir à loucura, só há um caminho para recuperar a sanidade: organizar os pensamentos. !l Normalmente isso exige sabedoria e tempo. Com inteligência e magia, porém, você consegue fazê-lo quando quiser. !d Vantagens: sua mente se fortalece temporariamente, os pensamentos passam a se conectar melhor e você ganha um pouco de compreensão dos #2Aspectos#0 básicos do mundo. !l Desvantagens: forçar a mente assim não traz inspiração de outros mundos e deixa você muito cansado. !p NÃO TRATA DEPRESSÃO!</desc>
+      <modifiedBy>HEALING,DURATION,BUFF_POWER</modifiedBy>
+    </component>
+    <component id="Fertilize" mod="Botania">
+      <name>Fertilizar</name>
+      <desc>Com mana suficiente, é possível cultivar plantas como se usasse farinha de osso. Você pode até fazer #2Flores Místicas#0 crescerem, como a #5Jaded Amaranthus#0! Ao acrescentar #2Fertilizante Floral#0 e #2Sementes de Pastagem#0 à magia, ela pode criar vegetação inteiramente nova, em vez de apenas ajudar plantas existentes. !d #4Lembre-se#0: o tipo de #2Sementes de Pastagem#0 usado na fabricação determina a grama produzida.</desc>
+      <modifiedBy>HEALING</modifiedBy>
+    </component>
+    <component id="MutatePlants" mod="witchery">
+      <name>Mutação de Plantas</name>
+      <desc>Embora Mutandis seja uma mistura alquímica sofisticada e estranha, continua sendo um reagente mágico. Portanto, seu efeito pode ser reproduzido com magia. !l Só não use em criaturas: não é seguro.</desc>
+    </component>
+    <component id="Corporealize" mod="witchery">
+      <name>Corporificar</name>
+      <desc>Se houver algo estranho... na vizinhança... use esta magia para puxar criaturas etéreas ao plano corpóreo. !d Obtida ao pedir “educadamente” ao #4Fafnir#0. !d Código de teclas: SQFAES ou SFQAES !l (#4O que você está jogando?#0)</desc>
+    </component>
+    <component id="LeonardsMadness" mod="witchery">
+      <name>Loucura de Leonard</name>
+      <desc>Caelum Baratrum Ortus Occasus. !p !l #3Afrodite !l Bêndis !l Caos !l Dionísio !d Hera !l Hermes !l Ícaro !l Na-Na-Narciso !d Medusa epos os !l A sha la la la Zeus Zeus !l Minerva eco buss buss !l Adoro quando você kuss kuss #0</desc>
+    </component>
+    <component id="Singularity" mod="Avaritia">
+      <name>Singularidade</name>
+      <desc>Criar pequenos vórtices do vazio não é tão difícil, embora eles não durem muito.</desc>
+    </component>
+    <component id="SelfGravity" mod="Avaritia">
+      <name>Gravidade Própria</name>
+      <desc>Sua compreensão da relação entre massa, repulsão e atração permite curvar o próprio espaço-tempo ao seu redor. !d Você ficou tão atraente! !p Ainda está longe do verdadeiro domínio da gravicinese dos galileanos em órbita do planeta Keplorr.</desc>
+      <modifiedBy>DURATION,BUFF_POWER</modifiedBy>
+    </component>
+    <component id="LoveDamage" mod="Avaritia">
+      <name>Dano de Amor</name>
+      <desc>O que é #dAmor#0? !l Cura é como dano invertido... Ou quase: inverter o dano no tempo produz algo parecido com cura, não? !l Além disso, quase ninguém tenta resistir à cura, pois normalmente não faria sentido. !l Com o #dpoder do amor e da amizade#0, talvez seja possível curar ao contrário, fazendo o alvo literalmente se decompor. !d Por incrível que pareça, #5Poder de Cura#0 aumenta o dano causado.</desc>
+      <modifiedBy>HEALING</modifiedBy>
+    </component>
+    <component id="Pumpkifiction" mod="pumpkifiction">
+      <name>Aboborificação</name>
+      <desc>#4Gostosuras#0 ou #2travessuras#0? !l Invoque #6espíritos do Halloween#0 para criar um clima assustador! !d #4Atenção#0: #6espíritos do Halloween#0 não são invocações convencionais. Atacam o próprio conjurador e desaparecem após um tempo fixo.</desc>
+      <modifiedBy>DAMAGE,BUFF_POWER</modifiedBy>
+    </component>
+  </components>
+  <modifiers>
+    <modifier id="Homing">
+      <name>Teleguiado</name>
+      <desc>Você descobriu que Projétil sempre teve um potencial oculto de mira automática, semelhante ao Encadeamento. Assim que entendeu isso, obteve um novo modificador. Acrescenta um alcance fixo de 15 blocos para Projétil mirar na criatura mais próxima, ou mais 4 blocos por modificador para Míssil.</desc>
+      <modifies>HOMING</modifies>
+    </modifier>
+    <modifier id="Tortoise">
+      <name>Tartaruga</name>
+      <desc>Às vezes é preciso diminuir um pouco a velocidade da magia. Você descobriu como: cada modificador reduz a velocidade em um quarto e aumenta a duração. !d #4Lembre-se#0: duas aplicações resultam em 3/4 * 3/4 = 9/16 da velocidade total. Em algo sem velocidade, só a duração aumenta...</desc>
+      <modifies>SPEED,DURATION</modifies>
+    </modifier>
+    <modifier id="Nolla">
+      <name>Nolla</name>
+      <desc>Descoberto pelo Arquimago em outro universo após várias provações dolorosas. Valeu a pena: reduz a duração da magia a zero. !d Divirta-se à moda de Noita! !p #4Atenção#0: não faz #4NADA#0 com projéteis e formas semelhantes, pois não possuem duração ou ela não pode ser modificada.</desc>
+      <modifies>DURATION</modifies>
+    </modifier>
+    <modifier id="Diabolic">
+      <name>Diabólico</name>
+      <desc>Técnica de família dos senhores infernais. !l Fortalece todas as magias em reinos infernais, especialmente no Nether, e as enfraquece nos demais. !p #5Requisitos Prateados Avançados#0 !l Fusão com o Mundo pessoal, nível mágico 65 do AM2, vitória pessoal registrada contra o Guardião do Fogo e aprendizado no Nether. A dimensão só é exigida para aprender, não para conjurações posteriores. A combinação não é revelada. Veja Requisitos Prateados Avançados em Guias.</desc>
+      <modifies>RANGE,RADIUS,DAMAGE,DURATION,HEALING</modifies>
+    </modifier>
+    <modifier id="Ethereal">
+      <name>Etéreo</name>
+      <desc>O modificador favorito dos sábios interdimensionais. Fortalece magias em todas as dimensões, especialmente no End, exceto no mundo principal, onde as enfraquece. !d Talvez tenha relação com Planeptune? !p #5Requisitos Prateados Avançados#0 !l Fusão com o Mundo pessoal, nível mágico 70 do AM2 e aprendizado no End. A dimensão só é exigida para aprender, não para conjurações posteriores. A combinação não é revelada. Veja Requisitos Prateados Avançados em Guias.</desc>
+      <modifies>RANGE,RADIUS,DAMAGE,DURATION,HEALING</modifies>
+    </modifier>
+    <modifier id="Level">
+      <name>Nível</name>
+      <desc>Certa vez, o Arquimago visitou uma realidade onde precisou enfrentar o Conselho da Magia nas Provações do Caos. Num armário, encontrou uma veste que o fortalecia conforme derrotava inimigos. Ao voltar, criou um modificador semelhante, mas nesta realidade ele exige #aExperiência#0. !p #5Requisitos Prateados Avançados#0 !l Fusão com o Mundo pessoal e nível mágico 45 do AM2. A combinação não é revelada. Veja Requisitos Prateados Avançados em Guias.</desc>
+      <modifies>RANGE,RADIUS,DAMAGE,DURATION,HEALING</modifies>
+    </modifier>
+    <modifier id="ManaReduction">
+      <name>Redução de Mana</name>
+      <desc>Já pensou em diminuir o custo de uma magia? É possível otimizá-la, mas e se ela já estiver otimizada e ainda custar demais? Há várias soluções. Sua pesquisa mostrou que infundir a magia com #5Etherium Líquido#0 melhora a eficiência e reduz o custo. !d #4Lembre-se#0: duas aplicações reduzem o custo a 1/2 * 1/2 = 1/4.</desc>
+      <modifies>MANA</modifies>
+    </modifier>
+    <modifier id="Note">
+      <name>Nota</name>
+      <desc>Modificador de Canção que imita um bloco musical. Criar essa magia exige algum instrumento musical mágico.</desc>
+      <modifies>SOUND</modifies>
+    </modifier>
+    <modifier id="Sacrament">
+      <name>Sacramento</name>
+      <desc>Energia do vazio dominada e transformada em modificador, aprimorando quase todos os parâmetros necessários da magia. !p #5Requisitos Prateados Avançados#0 !l Fusão com o Mundo pessoal, nível mágico 90 do AM2, Diabólico e Etéreo aprendidos e consagração final concluída. A combinação não é revelada. Veja em Requisitos Prateados Avançados, na seção Guias, o ritual de consagração.</desc>
+      <modifies>RANGE,RADIUS,DAMAGE,DURATION,HEALING,PIERCING,BUFF_POWER,MINING_POWER,PROCS,VELOCITY_ADDED,DISMEMBERING_LEVEL</modifies>
+    </modifier>
+    <modifier id="EldritchMind" mod="Thaumcraft">
+      <name>Mente Sobrenatural</name>
+      <desc>Quanto mais Distorção você possui, mais o modificador fortalece a magia. !d O segredo da força do culto carmesim!</desc>
+      <modifies>RANGE,RADIUS,DAMAGE,DURATION</modifies>
+    </modifier>
+    <modifier id="FloweringNature" mod="Botania">
+      <name>Natureza Florescente</name>
+      <desc>A natureza é capaz de purificar e concentrar a mana mais pura. !l Embora um mago comum não interaja diretamente com ela, carregar grandes reservas aprimora certas propriedades das magias. !p #5Requisitos Prateados Avançados#0 !l Botania, Fusão com o Mundo pessoal, nível mágico 50 do AM2 e ao menos 200.000 de mana Botania em itens válidos do inventário ou dos espaços de Baubles. Reservatórios colocados no mundo não contam. A reserva é conferida, não consumida. A combinação não é revelada. Veja Requisitos Prateados Avançados em Guias.</desc>
+      <modifies>HEALING,BUFF_POWER</modifies>
+    </modifier>
+    <modifier id="CovenConnection" mod="witchery">
+      <name>Conexão com o Coven</name>
+      <desc>Você descobriu como fazer seu coven de bruxas ajudar a entoar suas magias, usando a mesma magia espacial de sempre, claro. !p #5Requisitos Prateados Avançados#0 !l Witchery, Fusão com o Mundo pessoal, nível mágico 50 do AM2 e ao menos três bruxas no seu próprio coven. O coven é conferido, não consumido. Aprender por eventos e orbes especiais também exige essa progressão. A combinação não é revelada. Veja Requisitos Prateados Avançados em Guias.</desc>
+      <modifies>RANGE,RADIUS,DURATION</modifies>
+    </modifier>
+    <modifier id="Supremacy" mod="Avaritia">
+      <name>Supremacia</name>
+      <desc>Usar a própria essência dos poderes do universo para fortalecer magias? !l Moleza!</desc>
+      <modifies>RANGE,RADIUS,DAMAGE,DURATION,HEALING?BUFF_POWER,MINING_POWER,DISMEMBERING_LEVEL</modifies>
+    </modifier>
+  </modifiers>
+  <talents>
+    <talent id="AdvancedSpellscribing">
+      <name>Inscrição Avançada de Magias</name>
+      <desc>Permite criar receitas com mais um modificador. !d Em outras palavras: mais um Lunar.</desc>
+    </talent>
+    <talent id="Atronach">
+      <name>Atronach</name>
+      <desc>Altera irreversivelmente a estrutura de sua fonte mágica interna e multiplica sua capacidade por dez. Porém, você deixa de recuperar mana pelos meios normais.</desc>
+    </talent>
+    <talent id="EtheriumChannels">
+      <name>Canais de Etherium</name>
+      <desc>Modifica permanentemente os canais mágicos, permitindo recuperar a reserva com maior eficiência enquanto você está no #5Etherium Líquido#0.</desc>
+    </talent>
+    <talent id="EtheriumInjection">
+      <name>Injeção de Etherium</name>
+      <desc>Injetar #5Etherium Líquido#0 em seus canais permite que ressoem com o #5Etherium Líquido#0 externo, produzindo #5Clareza#0.</desc>
+    </talent>
+    <talent id="ManaRegenArch">
+      <name>Regeneração de Mana do Arquimago</name>
+      <desc>Você quase se torna um só com a energia mágica. !l Sua regeneração de mana é muito rápida. !l Substitui o bônus de Regeneração de Mana III. !d Quem sabe isso permita tornar-se um arquimago tão grandioso quanto #lCe'nos#0..?</desc>
+    </talent>
+    <talent id="ExtraSummon">
+      <name>Invocação Extra</name>
+      <desc>Por que fazer você mesmo se outros podem fazer por você? Agora pode manter três criaturas invocadas ou encantadas adicionais, ou magos recrutados se tiver #5Comitiva de Magos#0.</desc>
+    </talent>
+  </talents>
+  <items>
+    <item id="am2pg:etheriumCrystal@0">
+      <name>Cristal de Etherium</name>
+      <desc>Às vezes, magos precisam transferir e armazenar energia mais rapidamente que pelas redes complexas de Etherium. Gravar runas num cristal preparado permite que ele contenha #5500 de Etherium#0 de qualquer tipo. O cristal pode ser usado diretamente em dispositivos mágicos.</desc>
+      <relatedEntries>mana_battery</relatedEntries>
+    </item>
+    <item id="am2pg:arcaneDumpling@0">
+      <name>Bolinho Arcano</name>
+      <desc>Bolinhos são deliciosos. A receita é simples: muita carne, pouca massa e raiz de tarma para dar sabor. !d Dois destes saciam você completamente e concedem vários efeitos benéficos por bastante tempo.</desc>
+    </item>
+    <item id="am2pg:xylophone@0">
+      <name>Xilofone</name>
+      <desc>Às vezes, os magos só querem... relaxar. !l Toca-discos e blocos musicais são perfeitos, mas você decidiu fazer sua própria música usando magia de #3ar#0. Este xilofone imita notas manipulando magia, em vez de produzir os sons por meios comuns.</desc>
+      <relatedEntries>Note</relatedEntries>
+    </item>
+    <item id="HellsDomain">
+      <name>Domínio Infernal</name>
+      <desc>Equipamentos mágicos feitos com substâncias encontradas no Nether, com uma pequena ajuda da magia.</desc>
+      <subitem id="am2pg:resource@1">
+        <name>Liga de Pedra do Sol</name>
+        <desc>A pedra do sol é uma excelente estabilizadora e acumuladora de magia, mais que uma emissora ou fornecedora. É rara nos lagos de lava, entre obsidianas. Seria ótima para equipamentos, mas é extremamente frágil, e misturá-la a metais comuns como ferro piora isso. A solução aparece ao pensar num metal macio, muito compatível com magia: ouro. Com suas propriedades, bastam um catalisador como #5Pó de Vinteum Purificado#0 e energia mágica para formar uma liga superior ao #5Taumium#0, ou talvez até ao #2Terrasteel#0.</desc>
+        <relatedEntries>itemOre@6,essence_refiner</relatedEntries>
+      </subitem>
+      <subitem id="am2pg:hellScythe@0">
+        <name>Foice Infernal</name>
+        <desc>Um presente dos antigos em troca de oferendas e sacrifícios. !l Possui um potencial místico incrível, mais que um simples gume afiado. Surpreendentemente durável, demonstra uma técnica de fabricação avançada.</desc>
+      </subitem>
+    </item>
+    <item id="InvadersMagitech">
+      <name>Magitecnologia dos Invasores</name>
+      <desc>Invasores de outros planos da realidade oferecem equipamentos mágicos notáveis.</desc>
+      <subitem id="am2pg:resource@2">
+        <name>Couro do Luar</name>
+        <desc>Ao contrário da pedra do sol, a pedra da lua é uma excelente fornecedora e emissora de magia, com várias outras propriedades úteis. Uma delas é seu peso incrivelmente baixo, talvez devido à natureza cósmica. A decisão lógica foi fazer um tecido, inferior apenas às roupas vivas feitas do sangue dos deuses.</desc>
+        <relatedEntries>itemOre@7,essence_refiner</relatedEntries>
+      </subitem>
+      <subitem id="am2pg:grimoire@0">
+        <name>Grimório</name>
+        <desc>Livros de magia já são bons, mas ainda não são o melhor. Se o #5Livro de Magias Arcano#0 era tão bom, onde está o #5Livro de Magias Arcano 2#0? Aqui: o #5Grimório#0 dos mestres antigos. Guarda uma enorme quantidade de magias e permite alternar rapidamente entre configurações prontas. Também serve como uma versão melhorada da #5Mesa de Inscrição#0 e é totalmente personalizável. !l Ao segurá-lo com as mãos nuas, você sente aquela antiga dor desaparecer lentamente...</desc>
+      </subitem>
+    </item>
+    <item id="am2pg:resource@0">
+      <name>Paradoxo do Vazio</name>
+      <desc>Uma matéria estranha que surgiu ao tentar rasgar o espaço onde havia rocha-mãe. !l Pulsa com uma energia peculiar do vazio. !l Para que será que serve?</desc>
+      <relatedEntries>VoidDamage</relatedEntries>
+    </item>
+  </items>
+  <blocks>
+    <block id="am2pg:voidCatcher">
+      <name>Capturador do Vazio</name>
+      <desc>Etherium está em toda parte, muitas vezes oculto. O #5Prisma Celestial#0 o coleta bem, mas só capta o tipo #bLuminoso#0, e sua estrutura é grande demais. Quem diria que fragmentar o prisma preservaria sua capacidade coletora? Um recipiente especial impede a energia de se dissipar. Em vez de estruturas enormes, use #5focos de mana#0 para aumentar a produção e #5focos de carga#0 para acelerar o processo. !p Colocado na #5dimensão do End#0, o aparelho coleta e armazena passivamente Etherium #lCósmico#0, uma forma primordial especial! !p Você suspeita que, com filtragem e concentração adequadas, ele poderia captar mais que Etherium #bLuminoso#0 e #lCósmico#0. Mas não faz ideia de como. Talvez deva procurar na #5Biblioteca da Fortaleza#0?</desc>
+      <relatedEntries>celestialprism_structure,manafocus,chargefocus,creature_focus,player_focus,monster_focus,item_focus</relatedEntries>
+    </block>
+    <block id="am2pg:etheriumExtractor">
+      <name>Extrator de Etherium</name>
+      <desc>“Obelisco é um bom gerador de Etherium.” Diga isso a alguém e ninguém acreditará. É enorme, ineficiente e às vezes parece esquecer o combustível. Ainda bem que a era da magitecnologia deixou para trás essas técnicas da idade da pedra. !d Este aparelho é um obelisco modificado e melhorado, com algumas diferenças: !l Transforma almas guardadas em #5Filactérios#0 em Etherium; !l Usa #5focos de mana#0 para aumentar a produção no lugar de estruturas grandes; !l Aceita #5focos de carga#0 para acelerar; !l Realmente ARMAZENA a substância ainda não extraída, isto é, os ticks de combustível não queimados, até que seja necessária, em vez de desperdiçá-la sabe-se lá com o quê.</desc>
+      <relatedEntries>obelisk,crystal_phylactery,manafocus,chargefocus</relatedEntries>
+    </block>
+    <block id="am2pg:etheriumSprinkler">
+      <name>Aspersor de Etherium</name>
+      <desc>Recuperar mana perto de um obelisco é bom, mas exige carregá-lo e tem alcance limitado. Por isso, você criou um aparelho que consome Etherium lentamente e espalha mana numa grande área, concedendo efeitos diferentes conforme o tipo de energia. !l #5Focos menores, comuns e maiores#0 alteram o alcance; #5focos de mana#0 reduzem o custo; #5focos de carga#0 aumentam a entrada de energia.</desc>
+      <relatedEntries>manafocus,chargefocus,lesserfocus,standardfocus,greaterfocus</relatedEntries>
+    </block>
+    <block id="am2pg:etheriumCondenser">
+      <name>Condensador de Etherium</name>
+      <desc>#5Etherium Líquido#0 é uma excelente fonte de energia, facilmente encontrada em grandes quantidades no mundo principal. Só alguém completamente maluco pensaria em inverter a decomposição de #5Etherium Líquido#0 em energia. Para quê? E por quê? Mas é possível. Como o #5Etherium Líquido#0 pode produzir quantidades enormes de energia com processamento adequado, condensá-lo também exige bastante. O meio mais simples é água: barata, mas com propriedades mágicas medíocres, então grandes quantidades evaporam durante o processo. Líquidos extraordinários de outros mods podem ser melhores. #4Sangue#0, também chamado de #4Essência Vital#0, é um exemplo. !l #5Focos menores, comuns e maiores#0 aumentam o líquido produzido por ciclo; #5focos de mana#0 reduzem o Etherium consumido; #5focos de carga#0 aumentam a entrada de energia. !d #4Nem tente#0 fechar um ciclo infinito de geração com água infinita e obelisco. Produzir um balde exige mais Etherium do que queimar um #5balde de Etherium líquido#0 no obelisco consegue fornecer, ao menos sem outros mods, alterações de configuração ou falhas.</desc>
+      <relatedEntries>manafocus,chargefocus,lesserfocus,standardfocus,greaterfocus</relatedEntries>
+    </block>
+    <block id="am2pg:etheriumBattery">
+      <name>Bateria de Etherium</name>
+      <desc>#5Supremo#0 Enormossauro... digo, bateria de mana! !l Técnicas avançadas permitem armazenar mais Etherium de qualquer tipo num só bloco. Isso tem um preço: campos de força e manipulação espacial aumentam o espaço interno. Mover a bateria sem levar exatamente aquele espaço causa perda permanente da energia. Baterias de mana comuns, como itens, também podem ser usadas diretamente no bloco para carregá-lo. !l #5Focos de mana#0 aumentam a capacidade, embora eu não saiba quem precisaria de tanto; #5focos de carga#0 aumentam a entrada e a velocidade de carregamento.</desc>
+      <relatedEntries>manafocus,chargefocus</relatedEntries>
+    </block>
+    <block id="am2pg:etheriumOvercharger">
+      <name>Sobrecarregador de Etherium</name>
+      <desc>Adoro criar magias com Onda! !l Adoro criar magias com Onda! !l Cadê todo o meu Etherium???? !d Cansou de esperar 666 horas para a bateria alimentar o altar? Eu também! Este sobrecarregador carrega imediatamente quase qualquer aparelho de Etherium voltado para ele. Com #5focos menores, comuns ou maiores#0, ainda permite ultrapassar a capacidade do destino. Isso exige energia extra, que pode ser considerada perda. !l #5Focos de mana#0 reduzem as perdas; !l #5focos de carga#0 aumentam a entrada de energia, embora ela já seja enorme. !d #5Atenção#0 às exceções: baterias de mana e outros sobrecarregadores não podem ser carregados por este aparelho.</desc>
+      <relatedEntries>manafocus,chargefocus,lesserfocus,standardfocus,greaterfocus</relatedEntries>
+    </block>
+    <block id="am2pg:etheriumOscillator">
+      <name>Oscilador de Etherium</name>
+      <desc>Chegou a hora da verdade: todos os tipos de Etherium têm, de algum modo, a mesma natureza. Ou quase: as diferenças aparecem na densidade vibratória dos campos geradores. Nada impede mudar essa densidade, e é isso que o aparelho faz. O volume de energia muda com a transformação, mas o processo não é gratuito nem perfeito: existem perdas. !l #5Foco de Itens#0 ativa o modo que ignora a capacidade, aceitando perdas por excesso; certas transformações dependem disso. #5Focos menores, comuns e maiores#0 ampliam a capacidade. #5Focos de mana#0 concentram melhor o Etherium e reduzem perdas. #5Focos de carga#0 aumentam a entrada e aceleram o processo.</desc>
+      <relatedEntries>item_focus,manafocus,chargefocus,lesserfocus,standardfocus,greaterfocus</relatedEntries>
+    </block>
+  </blocks>
+  <mechanics>
+    <mechanic id="affinity">
+      <subitem id="lightning_affinity">
+        <name>Afinidade com o Relâmpago</name>
+        <desc>Aumenta a velocidade de corrida de 1% a 30%, conforme sua afinidade. Com 50%, permite subir desníveis de um bloco. Com 90%, você domina o elemento a ponto de se tornar temporariamente um relâmpago usando a habilidade de afinidade. !d Infelizmente, a água causa uma espécie de curto-circuito. Você também pode acender TNT e sobrecarregar creepers próximos! À medida que ganha controle sobre sua natureza elétrica, esses efeitos podem ser reduzidos.</desc>
+      </subitem>
+      <subitem id="life_affinity">
+        <name>Afinidade com a Vida</name>
+        <desc>Regenera vida adicional lentamente, em velocidade proporcional à afinidade e independentemente da fome. !d Sua ligação com a vida causa mal-estar e náusea após matar, até que você compreenda a unidade do ciclo de vida e morte. !d Quanto maior a afinidade, mais criaturas pode invocar, encantar ou recrutar com #5Comitiva de Magos#0. A partir de certo ponto, as invocações ficam mais fortes que os corpos originais, ganhando vida e dano. !d Ao compreender o ciclo, você poderá reter instantaneamente almas de criaturas mortas em seus próprios corpos e obrigá-las a obedecer.</desc>
+      </subitem>
+    </mechanic>
+    <mechanic id="affinity" condition="clarityRework">
+      <subitem id="arcane_affinity">
+        <name>Afinidade Arcana</name>
+        <desc>Aprimora seu domínio da conjuração. A partir de 25%, reduz o gasto de mana e a exaustão, aumentando com a afinidade até 50% de desconto de mana e 25% de redução de exaustão. !l Em compensação, você recebe 10% mais dano. !d A partir de 50%, a cada 10 segundos há uma chance de ganhar efeitos de poção mágicos. Duração e nível crescem com a afinidade, até 90 segundos e nível III.</desc>
+      </subitem>
+    </mechanic>
+  </mechanics>
+  <structures>
+    <ritual id="potionInfusion_overview">
+      <name>Infusão Alquímica</name>
+      <desc>Estes rituais manipulam uma essência líquida, mais conhecida como “poção”. Qualquer efeito que aceite o Ritual da Ampulheta pode ser acrescentado a uma poção num suporte, usando a magia, o item indicado no ritual da ampulheta e o desenho especial desta seção.</desc>
+      <subitem id="potionInfusion_random">
+        <name>Infusão de Poções (Efeito Aleatório)</name>
+        <desc>Com fungo do Nether e Dano Aleatório, acrescenta um efeito existente à poção de maneira aleatória.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>potionInfusion_random</trigger>
+      </subitem>
+      <subitem id="potionInfusion_clear">
+        <name>Infusão de Poções (Limpar Efeito)</name>
+        <desc>Com leite e Dissipar, remove os primeiros efeitos da poção.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>potionInfusion_clear</trigger>
+      </subitem>
+      <subitem id="potionInfusion_heal">
+        <name>Infusão de Poções (Cura Instantânea)</name>
+        <desc>Com aum e Cura, acrescenta cura à poção.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>potionInfusion_heal</trigger>
+      </subitem>
+      <subitem id="potionInfusion_harm">
+        <name>Infusão de Poções (Dano Instantâneo)</name>
+        <desc>Com lápis-lazúli e Dano Mágico, acrescenta dano à poção.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>potionInfusion_harm</trigger>
+      </subitem>
+      <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+    </ritual>
+    <ritual id="villageCall_overview">
+      <name>Realocação de Aldeia</name>
+      <desc>[História em desenvolvimento] Ajuda a povoar novas terras. Por enquanto, só é possível invocar fazendeiros e magos.</desc>
+      <subitem id="villageCall_villager">
+        <name>Realocação de Aldeia (Fazendeiro)</name>
+        <desc>Invoca um aldeão fazendeiro para povoar novas terras ou negociar rapidamente. Melhor nem pensar de onde ele veio.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>villageCall_villager</trigger>
+      </subitem>
+      <subitem id="villageCall_mobMageVillager">
+        <name>Realocação de Aldeia (Mago)</name>
+        <desc>Invoca um aldeão mago para povoar novas terras ou negociar rapidamente. Melhor nem pensar de onde ele veio.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>villageCall_mobMageVillager</trigger>
+      </subitem>
+      <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+    </ritual>
+    <ritual id="callOfHell_overview">
+      <name>Chamado do Inferno</name>
+      <desc>[História em desenvolvimento] Estes rituais devem ser realizados no Nether. Pelo menos a maioria deles.</desc>
+      <subitem id="hell_reapers_song">
+        <name>Canção do Ceifador Infernal</name>
+        <desc>[História em desenvolvimento] Concede uma #5Foice Infernal#0. !l Use uma bigorna como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle,am2pg:hellScythe@0</relatedEntries>
+        <trigger>hellReapersSong</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_hellCow">
+        <name>Chamado Infernal (Vaca Infernal)</name>
+        <desc>Traz uma vaca infernal de sua terra natal para o Nether. Há um detalhe: primeiro você precisa conseguir um #5Chifre de Vaca Infernal#0. !l Use fogo como centro do ritual.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_hellCow</trigger>
+      </subitem>
+      <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+    </ritual>
+    <ritual id="callOfHell_overview" mod="AWWayofTime">
+      <subitem id="damnedMobilization">
+        <name>Mobilização de Guerra Infernal</name>
+        <desc>Invoca o demônio hiperdimensional superior em qualquer dimensão que você queira ver invadida por um exército furioso de demônios elementais. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>damnedMobilization</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_airElemental">
+        <name>Chamado Infernal (Elemental de Ar)</name>
+        <desc>Invoca uma manifestação do elemento ar no Nether. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_airElemental</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_fireElemental">
+        <name>Chamado Infernal (Elemental de Fogo)</name>
+        <desc>Invoca uma manifestação do elemento fogo no Nether. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_fireElemental</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_waterElemental">
+        <name>Chamado Infernal (Elemental de Água)</name>
+        <desc>Invoca uma manifestação do elemento água no Nether. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_waterElemental</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_earthElemental">
+        <name>Chamado Infernal (Elemental de Terra)</name>
+        <desc>Invoca uma manifestação do elemento terra no Nether. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_earthElemental</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_shadeElemental">
+        <name>Chamado Infernal (Elemental de Sombra)</name>
+        <desc>Invoca uma manifestação do elemento sombra no Nether. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_shadeElemental</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_holyElemental">
+        <name>Chamado Infernal (Elemental Sagrado)</name>
+        <desc>Invoca uma manifestação do elemento sagrado no Nether. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_holyElemental</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_smallEarthGolem">
+        <name>Chamado Infernal (Pequeno Golem de Terra)</name>
+        <desc>Invoca o demônio menor “Pequeno Golem de Terra” no Nether. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_smallEarthGolem</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_lowerGuardian">
+        <name>Chamado Infernal (Guardião Inferior)</name>
+        <desc>Invoca o demônio “Guardião Inferior” no Nether. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_slowerGuardian</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_iceDemon">
+        <name>Chamado Infernal (Demônio de Gelo)</name>
+        <desc>Invoca o demônio “Demônio de Gelo” no Nether. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_iceDemon</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_fallenAngel">
+        <name>Chamado Infernal (Anjo Caído)</name>
+        <desc>Invoca um antigo anjo, agora o demônio “Anjo Caído”, no Nether. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_fallenAngel</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_shade">
+        <name>Chamado Infernal (Sombra)</name>
+        <desc>Invoca o demônio “Sombra” no Nether. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_shade</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_boulderFist">
+        <name>Chamado Infernal (Punho de Pedra)</name>
+        <desc>Invoca o demônio “Punho de Pedra” no Nether. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_boulderFist</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_bileDemon">
+        <name>Chamado Infernal (Demônio da Bile)</name>
+        <desc>Invoca o demônio superior da gula, “Demônio da Bile”, no Nether. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_bileDemon</trigger>
+      </subitem>
+      <subitem id="hellspawnCall_wingedFireDemon">
+        <name>Chamado Infernal (Demônio de Fogo Alado)</name>
+        <desc>Invoca o demônio superior da ira, “Demônio de Fogo Alado”, no Nether. !l Use um altar de sangue como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>hellspawnCall_wingedFireDemon</trigger>
+      </subitem>
+    </ritual>
+    <ritual id="descentOfTheEnd_overview">
+      <name>Descida do End</name>
+      <desc>[História em desenvolvimento] Estes rituais devem ser realizados no End.</desc>
+      <subitem id="origin_of_knowledge">
+        <name>Origem do Conhecimento</name>
+        <desc>[História em desenvolvimento] Concede um #5Grimório#0. !l Use uma mesa de encantamentos como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle,am2pg:grimoire@0</relatedEntries>
+        <trigger>originOfKnowledge</trigger>
+      </subitem>
+      <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+    </ritual>
+    <ritual id="descentOfTheEnd_overview" mod="Thaumcraft">
+      <subitem id="eldritchMobilization">
+        <name>Mobilização Missionária Sobrenatural</name>
+        <desc>Invoca o “Portal Carmesim” em qualquer dimensão que você queira ver invadida pelo herético Culto Carmesim. !l Use um altar sobrenatural ou pedra incrustada brilhante como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>eldritchMobilization</trigger>
+      </subitem>
+    </ritual>
+    <ritual id="rituals_overview">
+      <subitem id="extend_maximization" old="">
+        <name>Ritual da Ampulheta (Maximização)</name>
+        <desc>Prolonga muito um efeito, acrescentando 180 segundos mais outros 180 segundos para cada modificador de Poder de Efeito no mesmo estágio da magia que aplica o efeito.</desc>
+        <relatedEntries>wizardChalk</relatedEntries>
+        <ritualName>hourglass</ritualName>
+        <ritualController>Maximization</ritualController>
+      </subitem>
+      <subitem id="tornSpace_overview">
+        <name>Espaço Rasgado</name>
+        <desc>[História em desenvolvimento] A história chegará na próxima atualização... espero...</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>tornSpace</trigger>
+      </subitem>
+      <subitem id="breakthrough_overview">
+        <name>Transcendência</name>
+        <desc>[História em desenvolvimento] Abrir os chakras, sei lá...</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>breakthrough</trigger>
+      </subitem>
+      <subitem id="target_overview">
+        <name>Vincular Marca do Ender</name>
+        <desc>Vincula completamente a habilidade de afinidade do Ender a um local exato.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>target</trigger>
+      </subitem>
+      <subitem id="impactEvent_overview">
+        <name>Evento de Impacto</name>
+        <desc>#8Sugestão de yaggod.#0 !l Invoca um meteoro de pedra da lua. Deve ser realizado no End e exige o sacrifício de uma entidade.</desc>
+        <relatedEntries>wizardChalk,warding_candle,itemOre@7</relatedEntries>
+        <trigger>impactEvent</trigger>
+      </subitem>
+      <subitem id="soultrapRevival_overview">
+        <name>Restauração de Alma Aprisionada</name>
+        <desc>Por que não colocar a alma no gerador? O que poderia dar errado? !l Use um gerador inerte como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle,inertSpawner</relatedEntries>
+        <trigger>soultrapRevival</trigger>
+      </subitem>
+      <subitem id="soultrapAlteration_overview">
+        <name>Alteração de Alma Aprisionada</name>
+        <desc>Por que não colocar a alma no gerador? O que poderia dar errado? !l Use um gerador de criaturas como bloco central.</desc>
+        <relatedEntries>wizardChalk,warding_candle</relatedEntries>
+        <trigger>soultrapAlteration</trigger>
+      </subitem>
+    </ritual>
+    <ritual id="rituals_overview" mod="Thaumcraft">
+      <subitem id="extend_fluxdisease" old="old">
+        <name>Ritual da Ampulheta (Doença de Fluxo)</name>
+        <desc>Prolonga muito um efeito, acrescentando 180 segundos mais outros 180 segundos para cada modificador de Poder de Efeito no mesmo estágio da magia que aplica o efeito.</desc>
+        <relatedEntries>wizardChalk</relatedEntries>
+        <ritualName>hourglass</ritualName>
+        <ritualController>FluxDisease</ritualController>
+      </subitem>
+    </ritual>
+  </structures>
+  <bosses>
+    <boss id="am2pg.PortalDemon" mod="AWWayofTime">
+      <name>Demônio Portal</name>
+      <desc>Um demônio que também é um portal para um mundo em guerra e convoca um esquadrão demoníaco especialmente treinado para o campo de batalha. Exige um ritual específico para ser invocado. Quando destruído, deixa uma orbe branca do infinito com conhecimentos de magia do sangue. !d Nível recomendado: qualquer um, basta desviar.</desc>
+    </boss>
+  </bosses>
+  <guides>
+    <guide id="am2pg_advanced_silver" unlocked="true" order="25">
+      <name>Requisitos Prateados Avançados</name>
+      <desc>Estes tópicos mostram somente os requisitos adicionais das descobertas prateadas avançadas. As combinações continuam sendo um mistério para você investigar. !l Conclua pessoalmente o Ritual da Fusão com o Mundo e depois cumpra as condições da parte desejada. Escolha um tópico abaixo. !p #5Aprendizado e recompensas especiais#0 !l Os requisitos também valem quando uma orbe especial ou um evento ensina uma parte avançada. Guarde a orbe para depois se ainda não puder aprender seu conteúdo restrito. !l Depois de aprender, não é preciso repetir a iniciação, o desafio ou a conferência de mana e coven a cada conjuração. Os efeitos originais e custos normais continuam valendo. !l Pontos prateados compram apenas talentos. A orbe marcada do portal ritual concede exatamente um ponto prateado, sem pontos coloridos nem habilidades.</desc>
+      <relatedEntries>world_fusion,ManaLink,Level,Nullify,CovenConnection,FloweringNature,Diabolic,Ethereal,Sacrament</relatedEntries>
+      <subitem id="am2pg_silver_initiation" unlocked="true">
+        <name>Iniciação: Fusão com o Mundo</name>
+        <desc>#5Fusão com o Mundo#0 !l Vínculo de Mana continua disponível antes desta iniciação. Sua combinação de descoberta não é descrita aqui. !l Use Vínculo de Mana no núcleo de esmeralda da estrutura completa de Fusão com o Mundo, com os reagentes normais. A entrada original do ritual mostra o desenho e os ingredientes. !l A conexão pertence a quem conclui o ritual; o ritual de outra pessoa não inicia você. Ela é salva no personagem. Não é necessário manter a estrutura montada continuamente.</desc>
+        <relatedEntries>world_fusion,ManaLink</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_level" unlocked="true">
+        <name>Nível: requisitos adicionais</name>
+        <desc>Conclua pessoalmente Fusão com o Mundo e alcance nível mágico 45 ou superior no AM2. !l É o nível mágico do AM2, não o nível verde de experiência do Minecraft. A combinação de descoberta não é revelada aqui.</desc>
+        <relatedEntries>Level</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_nullify" unlocked="true">
+        <name>Anular: requisitos adicionais</name>
+        <desc>Conclua pessoalmente Fusão com o Mundo, alcance nível mágico 50 do AM2 e tenha uma vitória pessoal registrada contra o Guardião do Ender. !l Carregar um espólio obtido por outro jogador não substitui seu registro de vitória. A combinação não é revelada aqui.</desc>
+        <relatedEntries>Nullify</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_coven" unlocked="true">
+        <name>Conexão com o Coven: requisitos adicionais</name>
+        <desc>Exige Witchery. Conclua pessoalmente Fusão com o Mundo, alcance nível mágico 50 do AM2 e tenha ao menos três bruxas no seu próprio coven. !l Bruxas próximas ou pertencentes a outra pessoa não contam. A participação no coven é conferida ao aprender; as bruxas não são consumidas. Recompensas especiais e o evento de aprendizado com bruxas também precisam respeitar os requisitos. !l Depois de aprendido, o poder original do modificador ainda depende do seu coven atual. A combinação não é revelada aqui.</desc>
+        <relatedEntries>CovenConnection</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_flowering" unlocked="true">
+        <name>Natureza Florescente: requisitos adicionais</name>
+        <desc>Exige Botania. Conclua pessoalmente Fusão com o Mundo, alcance nível mágico 50 do AM2 e carregue ao menos 200.000 de mana Botania em itens válidos do inventário ou nos espaços de Baubles equipados. !l Um reservatório colocado no mundo não conta como mana carregada. A reserva é conferida, mas não consumida na descoberta. Orbes especiais também respeitam esses requisitos. !l Depois de aprendido, o poder original do modificador ainda depende da mana Botania que você carrega. A combinação não é revelada aqui.</desc>
+        <relatedEntries>FloweringNature</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_diabolic" unlocked="true">
+        <name>Diabólico: requisitos adicionais</name>
+        <desc>Conclua pessoalmente Fusão com o Mundo, alcance nível mágico 65 do AM2, tenha uma vitória pessoal registrada contra o Guardião do Fogo e faça a descoberta no Nether. !l A dimensão é exigida só ao aprender, não nas conjurações posteriores. Depois, o modificador mantém seu comportamento original em cada dimensão. A combinação não é revelada aqui.</desc>
+        <relatedEntries>Diabolic</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_ethereal" unlocked="true">
+        <name>Etéreo: requisitos adicionais</name>
+        <desc>Conclua pessoalmente Fusão com o Mundo, alcance nível mágico 70 do AM2 e faça a descoberta no End. !l A dimensão é exigida só ao aprender, não nas conjurações posteriores. Depois, o modificador mantém seu comportamento original em cada dimensão. A combinação não é revelada aqui.</desc>
+        <relatedEntries>Ethereal</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_consecration" unlocked="true">
+        <name>Consagração Final</name>
+        <desc>#5Preparação#0 !l Conclua pessoalmente Fusão com o Mundo, alcance nível mágico 90 do AM2 e aprenda Diabólico e Etéreo. !l Monte novamente a estrutura de Fusão com o Mundo ao redor de um bloco de esmeralda. Jogue no chão todos os reagentes normais, como no ritual original. Carregue no inventário uma estrela do Nether e um paradoxo do vazio como oferendas extras. Conjure Vínculo de Mana no núcleo para concluir sua consagração pessoal. !l As oferendas extras só são consumidas se der certo. A cerimônia é necessária uma vez; quem já foi consagrado não gasta essas oferendas novamente. A consagração não ensina Sacramento por si só: ainda será preciso descobri-lo depois. Esta entrada não revela essa combinação.</desc>
+        <relatedEntries>world_fusion,ManaLink,Diabolic,Ethereal,Sacrament</relatedEntries>
+      </subitem>
+      <subitem id="am2pg_silver_sacrament" unlocked="true">
+        <name>Sacramento: requisitos adicionais</name>
+        <desc>Conclua pessoalmente Fusão com o Mundo, alcance nível mágico 90 do AM2, aprenda Diabólico e Etéreo e conclua a Consagração Final. !l Leia Consagração Final neste guia para os requisitos do ritual. Aprender Sacramento não fabrica a magia pronta: os ingredientes normais do altar e o custo de conjuração continuam valendo. A combinação não é revelada aqui.</desc>
+        <relatedEntries>Sacrament,Diabolic,Ethereal</relatedEntries>
+      </subitem>
+    </guide>
+  </guides>
+</compendium>

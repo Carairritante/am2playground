@@ -11,7 +11,7 @@ GUIDE_ID = 'am2pg_advanced_silver'
 TARGETS = ('Level', 'Nullify', 'CovenConnection', 'FloweringNature', 'Diabolic', 'Ethereal', 'Sacrament')
 MARKERS = {
     'en_US': '!p #5Advanced Silver requirements#0 !l ',
-    'pt_BR': '!p #5Requisitos Silver adicionais#0 !l ',
+    'pt_BR': '!p #5Requisitos Prateados Avançados#0 !l ',
 }
 COMPENDIUM_PATTERN = re.compile(r'^assets/am2pg/docs/ArcaneCompendium_(.+)\.xml$')
 
@@ -56,7 +56,7 @@ def merge_compendium(source_xml, language='en_US'):
             desc = ET.SubElement(entry, 'desc')
         inherited = desc.text or ''
         # Reapplying or switching locale replaces our previous appendix, not upstream text.
-        for marker in MARKERS.values():
+        for marker in list(MARKERS.values()) + ['!p #5Requisitos Silver adicionais#0 !l ']:
             inherited = inherited.split(marker, 1)[0]
         desc.text = inherited.rstrip() + ' ' + MARKERS[language] + requirements[identifier]
 

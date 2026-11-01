@@ -42,7 +42,7 @@ def main():
     subprocess.run(['javac', '--release', '8', '-cp', os.pathsep.join([str(forge), str(server), str(BUILD / 'compile-only-classes')]),
         '-d', str(BUILD / 'probes'), str(ROOT / 'tests/cauldronprobe/CauldronProbe.java'),
         str(ROOT / 'tests/portalprobe/PortalProbe.java'), str(ROOT / 'tests/regenprobe/RegenProbe.java'), str(ROOT / 'tests/progressionprobe/ProgressionProbe.java')], check=True)
-    subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', str(ROOT / 'tests'), '-p', 'test_compendium_merge.py'], check=True)
+    subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', str(ROOT / 'tests'), '-p', 'test_compendium*.py'], check=True)
     dist = BUILD / 'dist'
     dist.mkdir(parents=True, exist_ok=True)
     output = dist / 'AM2PG-maintenance-tools.jar'

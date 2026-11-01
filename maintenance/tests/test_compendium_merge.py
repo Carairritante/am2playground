@@ -47,9 +47,9 @@ class CompendiumMergeTests(unittest.TestCase):
             with zipfile.ZipFile(target) as jar:
                 self.assertEqual(b'unchanged class body', jar.read('some/Unrelated.class'))
                 text = jar.read('assets/am2pg/docs/ArcaneCompendium_pt_BR.xml').decode('utf-8')
-                self.assertIn('Requisitos das Silver avançadas', text)
+                self.assertIn('Requisitos Prateados Avançados', text)
                 self.assertIn('200.000', text)
-                self.assertIn('Ender Guardian', text)
+                self.assertIn('Guardião do Ender', text)
                 self.assertIn('inventário', text)
 
     def test_only_extra_requirements_are_published(self):
