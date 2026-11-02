@@ -55,6 +55,7 @@ public final class SilverProgressionRules {
  public static String missing(Object player,Object part) {
   String name=key(part);int n=index(name);
   if(n<0)return null;
+  if(!SilverProgression.advancedAvailable())return PREFIX+"requiresAM25";
   Object props=properties(player);
   if(props==null)return PREFIX+"properties";
   if(!Boolean.TRUE.equals(field(props,"hasRitual")))return PREFIX+"worldFusion";

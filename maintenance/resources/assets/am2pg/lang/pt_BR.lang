@@ -25,3 +25,7 @@ am2pg.progress.missing.consecrationItems=Carregue uma Nether Star e um Void Para
 am2pg.progress.discovered=Descoberta: %s
 am2pg.progress.consecrated=Sua consagração final foi concluída.
 am2pg.progress.alreadyConsecrated=Você já concluiu a consagração final.
+
+am2pg.gui.silverDiscoveryOnly=Pontos Silver livres compram somente talentos. Descubra esta habilidade por magia ou por sua recompensa especial.
+
+am2pg.progress.missing.requiresAM25=As descobertas avançadas requerem AM2.5 com World Fusion nativo.

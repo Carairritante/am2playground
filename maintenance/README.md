@@ -17,7 +17,12 @@ Orbs com habilidades pendentes são bloqueadas antes de qualquer consumo ou pont
 Requisitos de aquisição não são exigidos novamente a cada conjuração depois de aprender.
 Mana Link e os desbloqueios originais necessários à iniciação continuam disponíveis.
 
-Esta versão requer AM2.5 CR5 ou mais recente para o evento de extensão do ritual.
+As descobertas avançadas exigem AM2.5 com World Fusion e registros pessoais de
+guardiões nativos. Nenhuma CR personalizada ou evento novo do core é exigido.
+No AM2 original de Mithion, o restante do Playground continua funcionando;
+essas descobertas avançadas ficam indisponíveis com aviso explícito, sem
+consumir orbes ou materiais. A capacidade é detectada pela API, não pelo nome
+do arquivo ou número de versão.
 As quatro regressões também passaram com AM2.5 CR6, sem alteração do JAR do addon.
 O Giz do Arquiteto Arcano pertence ao [fork do AM2.5](https://github.com/Carairritante/ArsMagica2/tree/correcoes),
 onde estão suas fontes e instruções. A consagração
@@ -31,10 +36,11 @@ Star e um Void Paradox adicionais no inventário. A iniciação original não mu
 - `tests/progressionprobe/`: fronteiras de requisitos, sete descobertas, consumo
   de orbs e realização dos dois rituais em ambiente descartável.
 
-A manutenção mais recente corrige um ciclo infinito nos eventos de regeneração
-de mana, reproduzido após aprender Mana Regen Archmage. O AM2.5 CR4 associado
-reserva os pontos Silver livres para talentos; magias e modificadores continuam
-pelos seus métodos de descoberta ou recompensa especial.
+A correção da regeneração impede um ciclo infinito nos eventos de mana,
+reproduzido após aprender Mana Regen Archmage. Na manutenção atual, o próprio
+Playground reserva os pontos Silver livres para talentos; magias e modificadores
+continuam pelos seus métodos de descoberta ou recompensa especial. Essa regra
+foi retirada do AM2.5 na CR13 e migrou para os hooks do addon.
 
 - `src/PatchManaRegen.java`: conecta o reparo à saída do transformador original.
 - `src/airburn/am2playground/preloader/ManaRegenTransformFix.java`: encaminha as
@@ -159,3 +165,53 @@ patchers, os novos auxiliares e suas mensagens: não é o mod completo e não de
 As dependências de compilação, assinaturas de API e verificadores temporários não
 acompanham o JAR. O CI verifica compilação e empacotamento; os testes de integração
 no jogo continuam exigindo o ambiente local descrito acima.
+
+
+## Fronteira entre os mods
+
+A extensão da consagração é aplicada pelo transformer do Playground ao Mana Link.
+O início original de World Fusion continua no AM2.5, e somente a cerimônia
+adicional pertence ao addon. O Playground não importa nem registra um listener
+para `am2.api.events.WorldFusionEvent`.
+
+O contador Silver, a dica de descoberta e a regra de comprar somente talentos
+são sobreposições do Playground. Ele confere árvore, pré-requisitos, pontos e
+categoria no servidor antes de qualquer gasto. Habilidades já aprendidas não
+são removidas. Sem o addon, o AM2.5 mantém sua interface e regras nativas.
+
+O reparo genérico da quarta leitura do saldo de pontos permanece no AM2.5,
+pois o protocolo original já transmite quatro valores. O transformer também
+corrige essa leitura nos cores originais que ainda a omitem e detecta a correção
+existente para não ler o valor duas vezes.
+
+`PatchIndependence` acrescenta o novo passe ao dispatcher original do Playground,
+preservando os outros transforms e variantes de compatibilidade. O passe é
+idempotente e atua apenas nas três classes necessárias. Os testes sintéticos
+`IndependentTransformChecks` verificam pilha, hooks e idempotência sem incluir
+implementações de outros mods. A matriz com clientes reais é validada à parte.
+
+## Montagem privada com uma variante do modpack
+
+`assemble_independent.py` combina um JAR local já corrigido, a versão original
+correspondente e, opcionalmente, uma variante do colaborador. O script compara
+as classes antes de compor: se a variante e nossa manutenção mudarem a mesma
+classe de maneiras diferentes, a montagem para e exige revisão. Assim os
+ajustes de Aether, GTNH e Lwjgl3ify não se perdem numa troca de JAR.
+
+Depois de compilar as ferramentas com `ci.py`, execute com caminhos locais:
+
+```text
+python assemble_independent.py --patched /privado/advanced-silver-progression.jar --original /privado/Playground-original.jar --compat-source /privado/Playground-do-modpack.jar --output /privado/Playground-independent-silver.jar
+```
+
+`--java`, `--asm`, `--payload` e `--patchers` permitem informar as ferramentas
+explicitamente. `--compat-source` é opcional. Os arquivos de entrada não são
+alterados, e a saída deve ficar fora deste repositório público. Para substituir
+uma montagem anterior, informe `--overwrite` expressamente.
+
+A montagem preserva os patches anteriores, aplica o hook ao dispatcher escolhido,
+inclui somente os oito payloads autorais previstos e atualiza os requisitos do
+Compendium. A linguagem é mesclada por chave, sem acumular traduções duplicadas.
+São gerados o JAR privado, um manifesto com hashes e verificação das entradas
+preservadas, e um arquivo separado de checksum. Nenhum mod original, dependência
+ou JAR jogável passa a integrar este fork público ou seu artefato de ferramentas.

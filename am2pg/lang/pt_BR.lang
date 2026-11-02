@@ -58,3 +58,7 @@ tile.etheriumOscillator.name=Oscilador de Etherium
 tile.etheriumOvercharger.name=Sobrecarregador de Etherium
 tile.etheriumSprinkler.name=Aspersor de Etherium
 tile.voidCatcher.name=Capturador do Vazio
+
+# Mensagens da manutencao / Maintenance messages
+am2pg.gui.silverDiscoveryOnly=Pontos Silver livres compram somente talentos. Descubra esta habilidade por magia ou por sua recompensa especial.
+am2pg.progress.missing.requiresAM25=As descobertas avançadas requerem AM2.5 com World Fusion nativo.

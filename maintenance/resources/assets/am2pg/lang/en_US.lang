@@ -25,3 +25,7 @@ am2pg.progress.missing.consecrationItems=Carry one Nether Star and one Void Para
 am2pg.progress.discovered=Discovered: %s
 am2pg.progress.consecrated=Your final consecration is complete.
 am2pg.progress.alreadyConsecrated=You have already completed the final consecration.
+
+am2pg.gui.silverDiscoveryOnly=Free Silver points buy talents only. Discover this ability through a spell or its special reward.
+
+am2pg.progress.missing.requiresAM25=Advanced discoveries require AM2.5 with native World Fusion.

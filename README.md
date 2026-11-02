@@ -21,6 +21,23 @@ código-fonte completo nem um JAR modificado do addon. As ferramentas novas não
 alteram as permissões ou os direitos do autor sobre o mod e os recursos originais.
 Os créditos e o README original foram preservados abaixo.
 
+### Independência do AM2.5
+
+[Matriz de testes, diagnóstico e responsabilidades de cada mod](maintenance/docs/INDEPENDENCIA-AM2-PLAYGROUND.md)
+
+O contador cinza do Oculus e a política de comprar somente talentos com pontos
+Silver pertencem ao Playground mantido. Seus próprios hooks aplicam essas regras
+quando o addon está instalado; o AM2.5 sozinho mantém a interface nativa.
+O Playground não exige uma CR personalizada nem o evento World Fusion do nosso
+fork. As sete descobertas avançadas exigem as capacidades nativas do AM2.5;
+no AM2 original de Mithion, o restante do addon permanece disponível.
+
+O Actions deste fork entrega **ferramentas de manutenção, não um mod jogável**.
+Não coloque `AM2PG-maintenance-tools.jar` na pasta `mods`. O JAR completo corrigido
+continua no [arquivo privado já existente](https://github.com/Carairritante/am2-playground-private),
+com acesso restrito. O AM2.5 é compilado separadamente no
+[fork do mod base](https://github.com/Carairritante/ArsMagica2/tree/correcoes).
+
 ---
 
 [![Code license (CC BY-NC-ND 3.0)](https://img.shields.io/badge/License-CC%20BY--NC--ND%203.0-blue.svg?style=flat-square)](https://creativecommons.org/licenses/by-nc-nd/3.0)

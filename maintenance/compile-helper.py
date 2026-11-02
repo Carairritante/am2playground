@@ -46,8 +46,6 @@ STUBS = {'airburn/am2playground/compat/PGCompat.java': 'package airburn.am2playg
                                                                      '{}'}
 
 STUBS.update({
- 'am2/api/spell/component/interfaces/IRitualInteraction.java': 'package am2.api.spell.component.interfaces; public interface IRitualInteraction {}',
- 'am2/api/events/WorldFusionEvent.java': 'package am2.api.events; public class WorldFusionEvent extends cpw.mods.fml.common.eventhandler.Event {public net.minecraft.world.World world;public net.minecraft.entity.EntityLivingBase caster;public am2.api.spell.component.interfaces.IRitualInteraction ritual;public int x,y,z;public boolean completed;}',
  'airburn/am2playground/items/PGItems.java': 'package airburn.am2playground.items; public class PGItems {public static net.minecraft.item.Item resource; public static net.minecraft.item.ItemStack whiteOrbBloodBoss;}',
  'net/minecraft/item/Item.java': 'package net.minecraft.item; public class Item {}',
  'cpw/mods/fml/common/eventhandler/Event.java': 'package cpw.mods.fml.common.eventhandler; public class Event {public void setCanceled(boolean value){} public boolean isCanceled(){return false;}}',
@@ -85,8 +83,10 @@ def main():
         'airburn/am2playground/compat/thaumcraft/PGRitualPortalRewards',
         'airburn/am2playground/items/PGSilverOrbRewards',
         'airburn/am2playground/preloader/ManaRegenTransformFix',
+        'airburn/am2playground/preloader/IndependentCompatibilityTransform',
         'airburn/am2playground/utils/ManaRegenEvents',
         'airburn/am2playground/progression/SilverProgressionRules',
+        'airburn/am2playground/progression/SilverOculusHooks',
         'airburn/am2playground/progression/SilverProgression']]
     sources.extend(str(root / 'src' / helper.with_suffix('.java')) for helper in helpers)
     classes = build / 'compile-only-classes'

@@ -2,9 +2,6 @@ package airburn.am2playground.progression;
 
 import java.lang.reflect.*;
 import java.util.*;
-import am2.api.events.WorldFusionEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.eventhandler.EventPriority;
 
 /** Server-authoritative learning gates; optional mod APIs are resolved only when needed. */
 public final class SilverProgression {
@@ -12,8 +9,26 @@ public final class SilverProgression {
  private static final List<Object> unlockers=new ArrayList<Object>();
  private static final Map<Object,Map<String,Long>> notices=Collections.synchronizedMap(new WeakHashMap<Object,Map<String,Long>>());
  private static boolean initialized;
+ private static volatile Boolean advancedSupport;
+ /** Detect native LTS capabilities, never a custom build number or extension event. */
+ public static boolean advancedAvailable() {
+  Boolean cached=advancedSupport;if(cached!=null)return cached.booleanValue();
+  synchronized(SilverProgression.class) {
+   if(advancedSupport!=null)return advancedSupport.booleanValue();
+   boolean available=false;
+   try {
+    Class<?> props=Class.forName("am2.playerextensions.ExtendedProperties");
+    available=props.getField("hasRitual").getType()==boolean.class
+        &&props.getField("guardian9").getType()==boolean.class&&props.getField("guardian10").getType()==boolean.class;
+    Class<?> manaLink=Class.forName("am2.spell.components.ManaLink");
+    manaLink.getMethod("getRitualShape");manaLink.getMethod("getReagents");
+   }catch(ReflectiveOperationException|LinkageError unavailable){available=false;}
+   advancedSupport=Boolean.valueOf(available);return available;
+  }
+ }
  public static synchronized void init() {
   if(initialized)return;
+  if(!advancedAvailable()){initialized=true;return;}
   try {
    Object manager=field("am2.spell.SkillManager","instance");
    for(String name:TARGETS) {
@@ -22,7 +37,6 @@ public final class SilverProgression {
     for(String required:recipe)if(call(manager,"getSkill",required)==null)throw new IllegalStateException("Unregistered discovery ingredient");
     unlockers.add(create("airburn.am2playground.utils.SpellUnlocker",part,recipe));
    }
-   call(field("net.minecraftforge.common.MinecraftForge","EVENT_BUS"),"register",new SilverProgression());
    initialized=true;
   } catch(Exception error){throw new IllegalStateException("Cannot initialize advanced discoveries",error);}
  }
@@ -30,6 +44,7 @@ public final class SilverProgression {
   if(!SilverProgressionRules.isTarget(part))return true;
   if(remote(player))return false;
   if(SilverProgressionRules.known(player,SilverProgressionRules.key(part)))return true;
+  if(!advancedAvailable()){message(player,"am2pg.progress.missing.requiresAM25");return false;}
   String missing=SilverProgressionRules.missing(player,part);
   if(missing!=null){message(player,missing);return false;}
   return true;
@@ -53,6 +68,7 @@ public final class SilverProgression {
   } catch(Exception error){throw new IllegalStateException("Cannot validate skill orb",error);}
  }
  public static boolean onCast(Object event) {
+  if(!advancedAvailable())return false;
   try {
    if(Boolean.TRUE.equals(call(event,"isCanceled")))return false;
    Object player=get(event,"caster");
@@ -73,7 +89,7 @@ public final class SilverProgression {
    return discovered;
   }catch(Exception error){throw new IllegalStateException("Cannot check advanced discovery",error);}
  }
- /** This helper is called only after the world ritual has also been validated by its event. */
+ /** Called after the Playground hook validates the ritual structure and ground reagents. */
  public static boolean consecrate(Object player) {
   if(remote(player)||!SilverProgressionRules.hasRitual(player))return false;
   try {
@@ -95,33 +111,33 @@ public final class SilverProgression {
    message(player,"am2pg.progress.consecrated");return true;
   }catch(Exception error){throw new IllegalStateException("Cannot complete consecration",error);}
  }
- @SubscribeEvent(priority=EventPriority.HIGH)
- public void worldFusion(WorldFusionEvent event) {
-  Object player=event.caster;
-  if(!type("net.minecraft.entity.player.EntityPlayer").isInstance(player)||!SilverProgressionRules.hasRitual(player))return;
-  event.setCanceled(true);
+ /** -1 delegates to native Mana Link; 0/1 handles only Playground's repeat consecration. */
+ public static int beforeWorldFusion(Object ritual,Object world,int x,int y,int z,Object player) {
+  if(!advancedAvailable())return -1;
+  if(!type("net.minecraft.entity.player.EntityPlayer").isInstance(player)||remote(player)||!SilverProgressionRules.hasRitual(player))return -1;
   try {
-   if(SilverProgressionRules.consecrated(player)){message(player,"am2pg.progress.alreadyConsecrated");return;}
-   String missing=consecrationMissing(player);if(missing!=null){message(player,missing);return;}
-   Object shape=call(event.ritual,"getRitualShape");
-   if(!Boolean.TRUE.equals(call(shape,"checkStructure",event.world,event.x,event.y,event.z))){message(player,"am2pg.progress.missing.ritualShape");return;}
-   Object bounds=stat("net.minecraft.util.AxisAlignedBB",new String[]{"func_72330_a","getBoundingBox"},(double)event.x-3,event.y*1.0,(double)event.z-3,(double)event.x+4,(double)event.y+1,(double)event.z+4);
-   List<?> items=(List<?>)call(event.world,new String[]{"func_72872_a","getEntitiesWithinAABB"},type("net.minecraft.entity.item.EntityItem"),bounds);
-   Object[] required=(Object[])call(event.ritual,"getReagents");
+   if(call(world,new String[]{"func_147439_a","getBlock"},x,y,z)!=field("net.minecraft.init.Blocks","field_150475_bE","emerald_block"))return -1;
+   if(SilverProgressionRules.consecrated(player)){message(player,"am2pg.progress.alreadyConsecrated");return 0;}
+   String missing=consecrationMissing(player);if(missing!=null){message(player,missing);return 0;}
+   Object shape=call(ritual,"getRitualShape");
+   if(!Boolean.TRUE.equals(call(shape,"checkStructure",world,x,y,z))){message(player,"am2pg.progress.missing.ritualShape");return 0;}
+   Object bounds=stat("net.minecraft.util.AxisAlignedBB",new String[]{"func_72330_a","getBoundingBox"},(double)x-3,y*1.0,(double)z-3,(double)x+4,(double)y+1,(double)z+4);
+   List<?> items=(List<?>)call(world,new String[]{"func_72872_a","getEntitiesWithinAABB"},type("net.minecraft.entity.item.EntityItem"),bounds);
+   Object[] required=(Object[])call(ritual,"getReagents");
    int[] counts=new int[required.length];int total=0;
    for(Object entity:items) {
     Object stack=call(entity,new String[]{"func_92059_d","getEntityItem"});int count=((Number)get(stack,"field_77994_a","stackSize")).intValue();
     if(count<=0)continue;int match=-1;
     for(int n=0;n<required.length;n++)if(same(stack,required[n])){match=n;break;}
-    if(match<0){message(player,"am2pg.progress.missing.ritualReagents");return;}
+    if(match<0){message(player,"am2pg.progress.missing.ritualReagents");return 0;}
     counts[match]+=count;total+=count;
    }
-   for(int n=0;n<required.length;n++)if(counts[n]!=((Number)get(required[n],"field_77994_a","stackSize")).intValue()){message(player,"am2pg.progress.missing.ritualReagents");return;}
-   if(total!=required.length||!consecrate(player))return;
+   for(int n=0;n<required.length;n++)if(counts[n]!=((Number)get(required[n],"field_77994_a","stackSize")).intValue()){message(player,"am2pg.progress.missing.ritualReagents");return 0;}
+   if(total!=required.length||!consecrate(player))return 0;
    for(Object entity:items)call(entity,new String[]{"func_70106_y","setDead"});
-   call(field("am2.RitualShapeHelper","instance"),"consumeRitualShape",event.ritual,event.world,event.x,event.y,event.z);
-   event.completed=true;
-  }catch(Exception error){throw new IllegalStateException("Cannot process World Fusion extension",error);}
+   call(field("am2.RitualShapeHelper","instance"),"consumeRitualShape",ritual,world,x,y,z);
+   return 1;
+  }catch(Exception error){throw new IllegalStateException("Cannot process Playground World Fusion extension",error);}
  }
  private static String consecrationMissing(Object player)throws Exception {
   if(((Number)call(stat("am2.playerextensions.ExtendedProperties","For",player),"getMagicLevel")).intValue()<90)return "am2pg.progress.missing.level90";
