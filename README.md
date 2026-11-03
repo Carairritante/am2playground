@@ -33,6 +33,12 @@ fork. As sete descobertas avançadas exigem as capacidades nativas do AM2.5;
 no AM2 original de Mithion, o restante do addon permanece disponível.
 
 O Actions deste fork entrega **ferramentas de manutenção, não um mod jogável**.
+
+As atualizações CR14–CR18 do catálogo, da busca bilíngue e da HUD/menu do giz
+pertencem ao [AM2.5](https://github.com/Carairritante/ArsMagica2/tree/correcoes).
+Elas não exigem outro JAR do Playground. A versão corrigida do addon continua
+`independent-silver`, preservada no arquivo privado.
+
 Não coloque `AM2PG-maintenance-tools.jar` na pasta `mods`. O JAR completo corrigido
 continua no [arquivo privado já existente](https://github.com/Carairritante/am2-playground-private),
 com acesso restrito. O AM2.5 é compilado separadamente no
