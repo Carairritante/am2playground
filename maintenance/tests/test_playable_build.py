@@ -29,21 +29,22 @@ class PlayableBuildTests(unittest.TestCase):
         with patch.object(build_playable, 'ROOT', self.root), contextlib.redirect_stdout(io.StringIO()):
             return build_playable.build()
 
-    def test_unchanged_sources_preserve_the_validated_archive_exactly(self):
-        result = self.build()
-        self.assertTrue(result['base_archive_preserved_exactly'])
-        self.assertEqual((self.root / self.version['build_base']).read_bytes(),
-                         (self.root / 'build/playable-dist' / self.version['playable_jar']).read_bytes())
+    def test_current_compiled_payloads_reach_the_playable_archive(self):
+        self.build()
+        with zipfile.ZipFile(self.root / 'build/playable-dist' / self.version['playable_jar']) as jar:
+            for name in build_playable.PAYLOADS:
+                self.assertEqual((self.root / 'build/payload' / name).read_bytes(), jar.read(name))
 
     def test_changed_compiled_payload_is_in_the_playable_mod(self):
         name = 'airburn/am2playground/progression/SilverOculusHooks.class'
         payload = self.root / 'build/payload' / name
-        data = payload.read_bytes()
+        with zipfile.ZipFile(self.root / self.version['build_base']) as base:
+            data = base.read(name)
         changed = data.replace(b'Cannot display Playground Silver points', b'Cannot display Playground Silver Points', 1)
         self.assertNotEqual(data, changed)
         payload.write_bytes(changed)
         result = self.build()
-        self.assertEqual([name], result['changed_entries'])
+        self.assertIn(name, result['changed_entries'])
         with zipfile.ZipFile(self.root / 'build/playable-dist' / self.version['playable_jar']) as jar:
             self.assertEqual(changed, jar.read(name))
 

@@ -61,8 +61,8 @@ os repositórios deste projeto. Novas instruções explícitas do usuário preva
   atualização publicada, sem reutilizar um número para bytes diferentes.
   A CR1 corresponde ao conteúdo já validado de `independent-silver-oculus`.
   Atualizar versão registrada, README, manifesto e SHA256SUMS em conjunto.
-  O artefato público `AM2PG-maintenance-tools.jar` continua sendo ferramenta,
-  não deve ser confundido com o JAR jogável numerado do arquivo privado.
+  O arquivo `AM2PG-maintenance-tools.jar` é ferramenta interna. O artefato
+  público do Actions deve ser o JAR jogável numerado, com checksum separado.
 
 - Manter também uma cópia do JAR completo no arquivo privado existente.
 - Autorização atual de 2026-11-03 substitui a antiga restrição de JAR privado:
