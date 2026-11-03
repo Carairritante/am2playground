@@ -44,7 +44,7 @@ def main():
         str(ROOT / 'tests/portalprobe/PortalProbe.java'), str(ROOT / 'tests/regenprobe/RegenProbe.java'), str(ROOT / 'tests/progressionprobe/ProgressionProbe.java'),
         str(ROOT / 'tests/independenceprobe/IndependenceProbe.java')], check=True)
     subprocess.run(['javac', '--release', '8', '-cp', os.pathsep.join([str(asm), str(BUILD / 'compile-only-classes')]), '-d', str(BUILD / 'checks'), str(ROOT / 'tests/IndependentTransformChecks.java')], check=True)
-    subprocess.run(['java', '-cp', os.pathsep.join([str(asm), str(BUILD / 'compile-only-classes'), str(BUILD / 'checks')]), 'IndependentTransformChecks'], check=True)
+    subprocess.run(['java', '-cp', os.pathsep.join([str(asm), str(forge), str(server), str(BUILD / 'compile-only-classes'), str(BUILD / 'checks')]), 'IndependentTransformChecks'], check=True)
     subprocess.run([sys.executable, '-m', 'unittest', 'discover', '-s', str(ROOT / 'tests'), '-p', 'test_*.py'], check=True)
     dist = BUILD / 'dist'
     dist.mkdir(parents=True, exist_ok=True)

@@ -69,12 +69,9 @@ public final class IndependentCompatibilityTransform implements Opcodes {
  private static int gui(ClassNode c) {
   int changed=0;
   for(MethodNode m:(List<MethodNode>)c.methods)if((m.name.equals("func_73863_a")||m.name.equals("drawScreen"))&&m.desc.equals("(IIF)V")) {
-   boolean hasCounter=false;int text=-1;
+   InsnList begin=new InsnList();begin.add(new VarInsnNode(ALOAD,0));begin.add(new MethodInsnNode(INVOKESTATIC,UI,"beginDraw","(Ljava/lang/Object;)V",false));m.instructions.insert(begin);changed++;
+   int text=-1;
    for(AbstractInsnNode n:m.instructions.toArray()) {
-    if(n instanceof FieldInsnNode&&n.getOpcode()==GETSTATIC&&((FieldInsnNode)n).name.equals("SILVER")) {
-     AbstractInsnNode next=next(n);
-     if(next instanceof MethodInsnNode&&((MethodInsnNode)next).name.equals("getSpellPoints"))hasCounter=true;
-    }
     if(n instanceof TypeInsnNode&&n.getOpcode()==NEW&&((TypeInsnNode)n).desc.equals("java/util/ArrayList")) {
      AbstractInsnNode at=next(next(next(n)));
      if(at instanceof VarInsnNode&&at.getOpcode()==ASTORE)text=((VarInsnNode)at).var;
@@ -82,19 +79,27 @@ public final class IndependentCompatibilityTransform implements Opcodes {
    }
    for(AbstractInsnNode n:m.instructions.toArray())if(n instanceof MethodInsnNode) {
     MethodInsnNode call=(MethodInsnNode)n;
-    if(!hasCounter&&call.getOpcode()==INVOKESPECIAL&&(call.name.equals("func_73863_a")||call.name.equals("drawScreen"))&&call.desc.equals("(IIF)V")) {
+    if(call.getOpcode()==INVOKESPECIAL&&(call.name.equals("func_73863_a")||call.name.equals("drawScreen"))&&call.desc.equals("(IIF)V")) {
      InsnList l=new InsnList();l.add(new VarInsnNode(ALOAD,0));l.add(new MethodInsnNode(INVOKESTATIC,UI,"drawCounter","(Ljava/lang/Object;)V",false));m.instructions.insertBefore(n,l);changed++;
+    }
+    if((call.name.equals("func_78276_b")||call.name.equals("drawString"))&&call.desc.equals("(Ljava/lang/String;III)I")) {
+     call.setOpcode(INVOKESTATIC);call.owner=UI;call.name="nativePointCount";call.desc="(Ljava/lang/Object;Ljava/lang/String;III)I";call.itf=false;changed++;
+    }
+    if((call.name.equals("func_73729_b")||call.name.equals("drawTexturedModalRect"))&&call.desc.equals("(IIIIII)V")&&is37(previous(n))&&is37(previous(previous(n)))) {
+     call.setOpcode(INVOKESTATIC);call.owner=UI;call.name="nativePointFrame";call.desc="(Ljava/lang/Object;IIIIII)V";call.itf=false;changed++;
     }
     if(text>=0&&call.name.equals("getSkillPointTypeForPart")) {
      AbstractInsnNode at=next(n);
      if(at instanceof VarInsnNode&&at.getOpcode()==ASTORE){InsnList l=new InsnList();l.add(new VarInsnNode(ALOAD,0));l.add(new VarInsnNode(ALOAD,text));l.add(new MethodInsnNode(INVOKESTATIC,UI,"addDiscoveryHint","(Ljava/lang/Object;Ljava/lang/Object;)V",false));m.instructions.insert(at,l);changed++;}
     }
    }
-   // A legacy core may already provide the entire visual overlay. Policy still lives in PG.
-   if(hasCounter)changed++;
+   for(AbstractInsnNode n:m.instructions.toArray())if(n.getOpcode()==RETURN) {
+    InsnList tip=new InsnList();tip.add(new VarInsnNode(ALOAD,0));tip.add(new VarInsnNode(ILOAD,1));tip.add(new VarInsnNode(ILOAD,2));tip.add(new MethodInsnNode(INVOKESTATIC,UI,"drawCounterTooltip","(Ljava/lang/Object;II)V",false));m.instructions.insertBefore(n,tip);changed++;
+   }
   }
   return changed;
  }
+ private static boolean is37(AbstractInsnNode n){return n instanceof IntInsnNode&&((IntInsnNode)n).operand==37||n instanceof LdcInsnNode&&Integer.valueOf(37).equals(((LdcInsnNode)n).cst);}
  private static AbstractInsnNode previous(AbstractInsnNode n){do{n=n.getPrevious();}while(n!=null&&n.getOpcode()<0);return n;}
  private static AbstractInsnNode next(AbstractInsnNode n){do{n=n.getNext();}while(n!=null&&n.getOpcode()<0);return n;}
 }

@@ -27,6 +27,7 @@ public final class SilverProgression {
   }
  }
  public static synchronized void init() {
+  SilverOculusHooks.registerNetworkHooks();
   if(initialized)return;
   if(!advancedAvailable()){initialized=true;return;}
   try {

@@ -212,3 +212,8 @@ am2pg.progress.consecrated=Your final consecration is complete.
 am2pg.progress.alreadyConsecrated=You have already completed the final consecration.
 am2pg.gui.silverDiscoveryOnly=Free Silver points buy talents only. Discover this ability through a spell or its special reward.
 am2pg.progress.missing.requiresAM25=Advanced discoveries require AM2.5 with native World Fusion.
+
+am2pg.gui.points.blue=Blue points
+am2pg.gui.points.green=Green points
+am2pg.gui.points.red=Red points
+am2pg.gui.points.silver=Silver points

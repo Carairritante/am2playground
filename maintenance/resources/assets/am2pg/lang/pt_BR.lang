@@ -29,3 +29,8 @@ am2pg.progress.alreadyConsecrated=Você já concluiu a consagração final.
 am2pg.gui.silverDiscoveryOnly=Pontos Silver livres compram somente talentos. Descubra esta habilidade por magia ou por sua recompensa especial.
 
 am2pg.progress.missing.requiresAM25=As descobertas avançadas requerem AM2.5 com World Fusion nativo.
+
+am2pg.gui.points.blue=Pontos azuis
+am2pg.gui.points.green=Pontos verdes
+am2pg.gui.points.red=Pontos vermelhos
+am2pg.gui.points.silver=Pontos Silver (cinza)

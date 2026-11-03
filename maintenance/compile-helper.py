@@ -64,6 +64,12 @@ STUBS.update({
  'org/lwjgl/input/Keyboard.java': 'package org.lwjgl.input; public class Keyboard {public static boolean isKeyDown(int key){return false;} }',
 })
 
+
+STUBS.update({
+ 'org/lwjgl/opengl/GL11.java': 'package org.lwjgl.opengl; public class GL11 {public static final int GL_ALL_ATTRIB_BITS=1048575,GL_LIGHTING=2896,GL_DEPTH_TEST=2929; public static void glPushAttrib(int a){} public static void glPopAttrib(){} public static void glDisable(int a){} public static void glPushMatrix(){} public static void glPopMatrix(){} public static void glTranslatef(float x,float y,float z){} public static void glScalef(float x,float y,float z){} public static void glColor4f(float r,float g,float b,float a){}}',
+ 'com/google/common/collect/ImmutableSet.java': 'package com.google.common.collect; public abstract class ImmutableSet<E> extends java.util.AbstractSet<E> {}',
+})
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--javac', default='javac')

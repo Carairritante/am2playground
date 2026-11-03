@@ -44,9 +44,22 @@ public final class IndependentTransformChecks implements Opcodes {
   }
   ClassNode gui=fixture("am2/guis/GuiSkillTrees","net/minecraft/client/gui/GuiScreen");
   method(gui,"func_73863_a","(IIF)V",new TypeInsnNode(NEW,"java/util/ArrayList"),new InsnNode(DUP),invoke(INVOKESPECIAL,"java/util/ArrayList","<init>","()V"),new VarInsnNode(ASTORE,4),new FieldInsnNode(GETSTATIC,"am2/spell/SkillTreeManager","instance","Lam2/spell/SkillTreeManager;"),new InsnNode(ACONST_NULL),invoke(INVOKEVIRTUAL,"am2/spell/SkillTreeManager","getSkillPointTypeForPart","(Lam2/api/spell/component/interfaces/ISkillTreeEntry;)L"+POINT+";"),new VarInsnNode(ASTORE,5),new VarInsnNode(ALOAD,0),new VarInsnNode(ILOAD,1),new VarInsnNode(ILOAD,2),new VarInsnNode(FLOAD,3),invoke(INVOKESPECIAL,gui.superName,"func_73863_a","(IIF)V"),new InsnNode(RETURN));
+  MethodNode screen=(MethodNode)gui.methods.get(0);
+  InsnList counter=new InsnList();counter.add(new VarInsnNode(ALOAD,0));
+  counter.add(new InsnNode(ICONST_0));counter.add(new InsnNode(ICONST_0));counter.add(new IntInsnNode(SIPUSH,210));counter.add(new InsnNode(ICONST_0));counter.add(new IntInsnNode(BIPUSH,37));counter.add(new IntInsnNode(BIPUSH,37));counter.add(invoke(INVOKEVIRTUAL,gui.name,"func_73729_b","(IIIIII)V"));
+  for(int i=0;i<3;i++){counter.add(new InsnNode(ACONST_NULL));counter.add(new LdcInsnNode("999"));counter.add(new InsnNode(ICONST_0));counter.add(new InsnNode(ICONST_0));counter.add(new LdcInsnNode(0xffffff));counter.add(invoke(INVOKEVIRTUAL,"net/minecraft/client/gui/FontRenderer","func_78276_b","(Ljava/lang/String;III)I"));counter.add(new InsnNode(POP));}
+  screen.instructions.insert(counter);
   gui=transform(gui);
   need(calls(gui,"airburn/am2playground/progression/SilverOculusHooks","drawCounter")==1,"Silver display must be PG-owned");
   need(calls(gui,"airburn/am2playground/progression/SilverOculusHooks","addDiscoveryHint")==1,"Silver discovery hint missing");
+  need(calls(gui,"airburn/am2playground/progression/SilverOculusHooks","beginDraw")==1,"Server presence must be checked per screen frame");
+  need(calls(gui,"airburn/am2playground/progression/SilverOculusHooks","nativePointFrame")==1,"Native frame fallback missing");
+  need(calls(gui,"airburn/am2playground/progression/SilverOculusHooks","nativePointCount")==3,"All native count draws must have a fallback");
+  need(calls(gui,"airburn/am2playground/progression/SilverOculusHooks","drawCounterTooltip")==1,"Exact-value point tooltip missing");
+  String hooks="airburn.am2playground.progression.SilverOculusHooks";
+  Class<?> panel=Class.forName(hooks);java.lang.reflect.Method compact=panel.getMethod("compact",int.class);
+  for(int value:new int[]{0,999,1000,1500,999999,Integer.MAX_VALUE,Integer.MIN_VALUE})need(String.valueOf(compact.invoke(null,value)).length()<=6,"Large balance must fit: "+value);
+  need("0".equals(compact.invoke(null,0))&&"1.5k".equals(compact.invoke(null,1500)),"Point formatting changed unexpectedly");
   byte[] untouched=bytes(fixture("example/Unrelated","java/lang/Object"));
   need(IndependentCompatibilityTransform.transform(untouched,"example.Unrelated")==untouched,"Unrelated classes changed");
   System.out.println("PASS: independent PG hooks, bytecode stack verification, native/fixed sync and idempotence.");
