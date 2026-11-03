@@ -1,5 +1,12 @@
 # Resultados registrados nos testes locais
 
+## CI jogável — CR2
+
+Entrega do mod jogável pelo Actions concluída a pedido de Akashiic.
+O build recompila os auxiliares, confere a base e preserva as entradas não alteradas.
+O JAR e SHA256SUMS são entregues separadamente, sem ZIP externo, por 14 dias.
+Os resultados históricos abaixo conservam o escopo de cada etapa.
+
 Registro iniciado em 31 de outubro de 2026, com ensaios adicionais datados abaixo.
 Os resultados são da sessão local de manutenção; não são resultados de CI deste fork.
 

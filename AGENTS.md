@@ -43,8 +43,11 @@ os repositórios deste projeto. Novas instruções explícitas do usuário preva
 - Preservar o upload de arquivos sem arquivamento (`archive: false`) e a retenção
   de 14 dias enquanto não houver orientação diferente do usuário.
 - Não criar releases automáticas como substituto dos artefatos da execução.
-- O Actions do AM2.5 compila o mod. O Actions público do Playground compila as
-  ferramentas de manutenção, não um JAR jogável completo do addon.
+- O Actions do AM2.5 compila o mod. A pedido explícito do usuário em
+  2026-11-03, o Actions público do Playground também deve recompilar os
+  auxiliares e entregar o JAR jogável completo e SHA256SUMS, sem ZIP externo.
+  A base binária validada pode integrar o fork público; não depender de
+  credenciais ou de downloads do arquivo privado para o CI funcionar.
 - Um pacote de recursos em ZIP é um formato próprio do Minecraft, não o ZIP
   externo de artefatos que foi recusado. Não confundir essas duas situações.
 - Diferenciar build local validado, CI em andamento e CI concluído com sucesso.
@@ -52,10 +55,21 @@ os repositórios deste projeto. Novas instruções explícitas do usuário preva
 
 ## Playground, autoria e arquivos privados
 
-- Manter o JAR completo modificado do Playground no arquivo privado existente.
-- No fork público do Playground, publicar os recursos, traduções e ferramentas
-  de manutenção combinados com o usuário. Não publicar fontes decompilados,
-  classes originais modificadas nem o JAR completo do addon.
+- Padrão de nomes solicitado em 2026-11-03: manter o nome base original e um
+  sufixo sequencial de manutenção no JAR jogável, começando por
+  `AM2PlayGround-Beta-0.12.1-CR1.jar`. Incrementar CR2, CR3 etc. a cada nova
+  atualização publicada, sem reutilizar um número para bytes diferentes.
+  A CR1 corresponde ao conteúdo já validado de `independent-silver-oculus`.
+  Atualizar versão registrada, README, manifesto e SHA256SUMS em conjunto.
+  O artefato público `AM2PG-maintenance-tools.jar` continua sendo ferramenta,
+  não deve ser confundido com o JAR jogável numerado do arquivo privado.
+
+- Manter também uma cópia do JAR completo no arquivo privado existente.
+- Autorização atual de 2026-11-03 substitui a antiga restrição de JAR privado:
+  publicar a base binária e o JAR jogável pelo Actions público do Playground.
+  Preservar licenças e créditos; não acrescentar fontes decompilados.
+  Registrar brevemente a entrega jogável do CI a pedido de Akashiic, sem
+  publicar conversas, logs privados ou detalhes pessoais.
 - Manter o reconhecimento da participação substancial do OpenAI Codex na
   investigação, programação, testes e documentação, sem remover a autoria original.
 - As combinações secretas das descobertas Silver não devem ser reveladas nos

@@ -81,7 +81,7 @@ def main():
     summary = os.environ.get('GITHUB_STEP_SUMMARY')
     if summary:
         with open(summary, 'a', encoding='utf-8') as stream:
-            stream.write('### Tooling build\n\nThis is a tools JAR, not an installable mod.\n\n```text\n' + line + '```\n')
+            stream.write('### Maintenance checks\n\nMaintenance sources compiled and verified.\n')
 
 
 if __name__ == '__main__':

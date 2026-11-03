@@ -6,12 +6,18 @@ oficial do mod. Veja a [declaração de participação](AI_DISCLOSURE.md).
 
 ## Escopo e arquivos
 
-O JAR jogável atual chama-se `AM2PlayGround-Beta-0.12.1-CR1.jar` e fica somente
-no arquivo privado. A CR1 reúne o conteúdo validado anteriormente com o nome
-`independent-silver-oculus`, sem alteração dos bytes. Cada atualização posterior
+O JAR jogável atual chama-se `AM2PlayGround-Beta-0.12.1-CR2.jar` e é entregue
+pelo Actions público, junto do SHA256SUMS. A CR2 recompila os auxiliares de
+manutenção sobre a base verificada da CR1. Cada atualização posterior
 publicada deve incrementar o número CR, mantendo o nome original do mod e
 atualizando [VERSION.json](VERSION.json), manifestos, README e SHA256SUMS.
-O JAR público `AM2PG-maintenance-tools.jar` continua sendo somente ferramenta.
+O JAR `AM2PG-maintenance-tools.jar` continua sendo somente ferramenta interna.
+
+Execute `python maintenance/ci.py` e depois `python maintenance/build_playable.py`
+na raiz do repositório, com JDK 17 e Python 3.9 ou superior. A saída jogável fica
+em `maintenance/build/playable-dist`. Alterações nos auxiliares e nos recursos
+são incorporadas na montagem; as outras entradas da base são preservadas.
+Atualize a revisão antes de publicar uma nova versão com conteúdo diferente.
 
 A versão atual acrescenta descobertas avançadas com iniciação pessoal World Fusion,
 nível mágico e desafios por habilidade. Nullify exige o Ender Guardian; Flowering
@@ -81,8 +87,8 @@ uma CR personalizada do mod base. Os testes e seus limites constam em
 - `compile-helper.py`: compila o auxiliar usando assinaturas mínimas de API apenas
   durante a compilação e exporta somente sua classe como payload.
 
-Estes são arquivos escritos na manutenção. Não incluem fontes decompilados,
-classes originais modificadas, dependências, o código completo do addon ou seu JAR.
+Os fontes de manutenção são autorais e não incluem fontes decompilados do addon.
+A base binária verificada fica em `base/` para a montagem automática do mod jogável.
 As permissões para modificar e distribuir o mod original são uma questão separada;
 criar um fork não concede autorização adicional. A licença e os avisos originais
 dos recursos e do addon não foram substituídos.
@@ -227,6 +233,5 @@ uma montagem anterior, informe `--overwrite` expressamente.
 A montagem preserva os patches anteriores, aplica o hook ao dispatcher escolhido,
 inclui somente os oito payloads autorais previstos e atualiza os requisitos do
 Compendium. A linguagem é mesclada por chave, sem acumular traduções duplicadas.
-São gerados o JAR privado, um manifesto com hashes e verificação das entradas
-preservadas, e um arquivo separado de checksum. Nenhum mod original, dependência
-ou JAR jogável passa a integrar este fork público ou seu artefato de ferramentas.
+Esse fluxo legado gera uma montagem local, manifesto e checksum. O fluxo atual
+do Actions usa `build_playable.py` e entrega o JAR jogável com checksum separado.

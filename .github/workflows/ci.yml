@@ -1,4 +1,4 @@
-name: AM2PG tooling CI
+name: AM2PG CI
 on:
   push:
   pull_request:
@@ -10,7 +10,7 @@ concurrency:
   group: am2pg-ci-${{ github.ref }}
   cancel-in-progress: true
 jobs:
-  build-tools:
+  build:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -26,17 +26,23 @@ jobs:
           python-version: '3.12'
       - name: Compile tooling and integration probes
         run: python maintenance/ci.py
-      - name: Upload tooling JAR without ZIP
+      - name: Build and verify playable mod
+        run: |
+          python maintenance/build_playable.py
+          printf '### Playable mod\n\n```text\n' >> "$GITHUB_STEP_SUMMARY"
+          cat maintenance/build/playable-dist/SHA256SUMS >> "$GITHUB_STEP_SUMMARY"
+          printf '```\n' >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload playable JAR without ZIP
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
-          path: maintenance/build/dist/AM2PG-maintenance-tools.jar
+          path: maintenance/build/playable-dist/AM2PlayGround-*.jar
           archive: false
           if-no-files-found: error
           retention-days: 14
       - name: Upload checksum without ZIP
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
-          path: maintenance/build/dist/SHA256SUMS
+          path: maintenance/build/playable-dist/SHA256SUMS
           archive: false
           if-no-files-found: error
           retention-days: 14
