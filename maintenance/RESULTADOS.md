@@ -1,7 +1,36 @@
 # Resultados registrados nos testes locais
 
-Registro publicado em 31 de outubro de 2026. Os resultados abaixo são da sessão
-local de manutenção; não são resultados de CI deste fork.
+Registro iniciado em 31 de outubro de 2026, com ensaios adicionais datados abaixo.
+Os resultados são da sessão local de manutenção; não são resultados de CI deste fork.
+
+## Oculus em 2x2 — 2 de novembro de 2026
+
+Em 3 de novembro, esse mesmo JAR passou a se chamar
+`AM2PlayGround-Beta-0.12.1-CR1.jar`, iniciando a numeração sequencial das correções.
+O checksum e o conteúdo são idênticos ao arquivo de nome descritivo abaixo.
+
+O contador conserva a moldura, o fundo e as cores originais. Azul e verde ficam
+na primeira linha; vermelho e Silver, na segunda. A mesa de inscrição não mudou.
+O próprio Playground observa o canal anunciado pelo servidor para ativar o quarto
+contador e limpa essa informação ao desconectar. O núcleo do AM2.5 não mudou.
+
+Validação local concluída em cópia descartável do Forbidden Series (214 mods):
+
+- Playground `independent-silver-oculus`, SHA-256
+  `a04423434834c29ba1ec6675da00993cbd762525dd0b7d53db15b751dc76b544`.
+- AM2.5 CR18, SHA-256
+  `cd9cb3de0365a58b1639e83d2523415cfe7e24249f00bac97ef0524ccc9a9cad`.
+- Anúncio real do servidor integrado, sincronização dos quatro saldos, alteração
+  de Silver, saldo zero, números grandes, tooltip exata e janela menor passaram.
+- Eventos REGISTER, UNREGISTER e desconexão reproduzidos no observador confirmaram
+  ativação, limpeza e retorno aos três contadores nativos. Não houve ensaio com
+  servidor remoto sem Playground; esse cenário não deve ser declarado testado.
+- Saída normal do cliente, conferência visual e instância original preservada.
+- Verificação de bytecode, idempotência, 12 testes das ferramentas e carregamento
+  dos auxiliares comuns sem classes gráficas do cliente passaram.
+
+O JAR jogável completo permanece no arquivo privado. Este resultado não indica
+publicação remota nem conclusão de um novo GitHub Actions.
 
 ## Regressão adicional — AM2.5 CR6
 

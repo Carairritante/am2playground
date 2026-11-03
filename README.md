@@ -36,8 +36,16 @@ O Actions deste fork entrega **ferramentas de manutenção, não um mod jogável
 
 As atualizações CR14–CR18 do catálogo, da busca bilíngue e da HUD/menu do giz
 pertencem ao [AM2.5](https://github.com/Carairritante/ArsMagica2/tree/correcoes).
-Elas não exigem outro JAR do Playground. A versão corrigida do addon continua
-`independent-silver`, preservada no arquivo privado.
+Elas não exigem outro JAR do Playground. A CR19 corrige as molduras do Compêndio
+no mod base, também sem alteração no addon. A versão atual do Playground é
+**CR1**, arquivo `AM2PlayGround-Beta-0.12.1-CR1.jar`, preservada no arquivo privado.
+Esse é o mesmo conteúdo validado como `independent-silver-oculus`; mudou somente
+o nome. As próximas atualizações usarão CR2, CR3 e assim por diante, conforme o
+[registro de versão e checksum](maintenance/VERSION.json).
+
+O painel do Oculus mantém a aparência nativa em 2x2 (azul/verde e vermelho/Silver),
+ativado quando o servidor anuncia o Playground. A mesa de inscrição não mudou.
+Confira os [resultados e limites do ensaio no Forbidden](maintenance/RESULTADOS.md).
 
 Não coloque `AM2PG-maintenance-tools.jar` na pasta `mods`. O JAR completo corrigido
 continua no [arquivo privado já existente](https://github.com/Carairritante/am2-playground-private),

@@ -59,6 +59,15 @@ publicação. Ajustes menores de documentação continuam no histórico Git comp
 - Créditos e licenças originais preservados. A participação substancial do
   OpenAI Codex está documentada nos arquivos de divulgação de autoria.
 
+## Atualizações posteriores
+
+O histórico do mod base inclui agora a [CR19 e a correção das molduras do Compêndio](https://github.com/Carairritante/ArsMagica2/blob/correcoes/docs/CORRECAO-MOLDURAS-CR19.md).
+Essa correção pertence somente ao AM2.5. No Playground, a manutenção
+CR1 (antes chamada `independent-silver-oculus`) conserva o painel nativo e organiza os quatro saldos
+em 2x2, condicionado ao anúncio do servidor. A mesa de inscrição não mudou.
+O [registro de validação](../RESULTADOS.md) descreve o teste no Forbidden e seus
+limites. O JAR completo do addon permanece no arquivo privado.
+
 ## Colaboração
 
 Abra PRs para `correcoes` nos forks de

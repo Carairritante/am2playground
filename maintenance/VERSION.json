@@ -1,0 +1,11 @@
+{
+  "base_version": "Beta-0.12.1",
+  "maintenance_revision": 1,
+  "playable_jar": "AM2PlayGround-Beta-0.12.1-CR1.jar",
+  "sha256": "a04423434834c29ba1ec6675da00993cbd762525dd0b7d53db15b751dc76b544",
+  "previous_descriptive_name": "AM2PlayGround-Beta-0.12.1-independent-silver-oculus.jar",
+  "same_content_as_previous_descriptive_name": true,
+  "playable_jar_repository": "Carairritante/am2-playground-private",
+  "public_ci_artifact": "AM2PG-maintenance-tools.jar",
+  "public_ci_artifact_is_playable": false
+}

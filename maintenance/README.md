@@ -6,6 +6,13 @@ oficial do mod. Veja a [declaração de participação](AI_DISCLOSURE.md).
 
 ## Escopo e arquivos
 
+O JAR jogável atual chama-se `AM2PlayGround-Beta-0.12.1-CR1.jar` e fica somente
+no arquivo privado. A CR1 reúne o conteúdo validado anteriormente com o nome
+`independent-silver-oculus`, sem alteração dos bytes. Cada atualização posterior
+publicada deve incrementar o número CR, mantendo o nome original do mod e
+atualizando [VERSION.json](VERSION.json), manifestos, README e SHA256SUMS.
+O JAR público `AM2PG-maintenance-tools.jar` continua sendo somente ferramenta.
+
 A versão atual acrescenta descobertas avançadas com iniciação pessoal World Fusion,
 nível mágico e desafios por habilidade. Nullify exige o Ender Guardian; Flowering
 Nature verifica 200.000 de mana carregada e Coven Connection verifica três bruxas
@@ -41,6 +48,14 @@ reproduzido após aprender Mana Regen Archmage. Na manutenção atual, o própri
 Playground reserva os pontos Silver livres para talentos; magias e modificadores
 continuam pelos seus métodos de descoberta ou recompensa especial. Essa regra
 foi retirada do AM2.5 na CR13 e migrou para os hooks do addon.
+
+O painel de pontos usa a moldura e as cores nativas, com azul/verde na primeira
+linha e vermelho/Silver na segunda. O próprio addon observa o anúncio do canal
+`am2pg` pelo servidor e limpa a informação ao desconectar. Sem esse anúncio,
+retorna ao painel nativo de três saldos. Valores grandes são abreviados, com o
+saldo completo na tooltip. Essa mudança não altera a mesa de inscrição nem exige
+uma CR personalizada do mod base. Os testes e seus limites constam em
+[RESULTADOS.md](RESULTADOS.md).
 
 - `src/PatchManaRegen.java`: conecta o reparo à saída do transformador original.
 - `src/airburn/am2playground/preloader/ManaRegenTransformFix.java`: encaminha as
