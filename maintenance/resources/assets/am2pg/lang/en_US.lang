@@ -27,6 +27,8 @@ am2pg.progress.consecrated=Your final consecration is complete.
 am2pg.progress.alreadyConsecrated=You have already completed the final consecration.
 
 am2pg.gui.silverDiscoveryOnly=Free Silver points buy talents only. Discover this ability through a spell or its special reward.
+am2pg.gui.blockedSpell=Blocked on this server: Contingency: Tick is disabled due to instability/abuse.
+am2pg.progress.blockedSpell=Contingency: Tick is disabled on this server.
 
 am2pg.progress.missing.requiresAM25=Advanced discoveries require AM2.5 with native World Fusion.
 

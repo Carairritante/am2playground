@@ -2,6 +2,7 @@ package airburn.am2playground.preloader;
 
 import java.lang.reflect.*;
 import java.util.*;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import org.objectweb.asm.*;
@@ -18,6 +19,9 @@ public final class IndependentCompatibilityTransform implements Opcodes {
  private static final String CONT_RING="airburn/am2playground/containers/ContainerRecursionRing";
  private static final String ITEM_RING="airburn/am2playground/items/baubles/ItemBaublesRecursionRing";
  private static final String ITEM_HELL="airburn/am2playground/items/baubles/ItemBaublesHellRing";
+ private static final String CONTINGENCY_TICK="airburn/am2playground/spell/shapes/Contingency_Tick";
+ private static final String PG_COMMON_EVENTS="airburn/am2playground/event/forge/PGCommonEventHandler";
+ private static final String CONTINGENCY_HELPER="airburn/am2playground/utils/helpers/PGContingencyTypesHelper";
  private static final String NBT_HELPER="airburn/am2playground/utils/helpers/PGNBTHelper";
  private static final ThreadLocal<ArrayList<Object[]>> RING_FRAMES=new ThreadLocal<ArrayList<Object[]>>();
  private IndependentCompatibilityTransform(){}
@@ -40,7 +44,16 @@ public final class IndependentCompatibilityTransform implements Opcodes {
    ||name.equals(INV_RING)
    ||name.equals(CONT_RING)
    ||name.equals(ITEM_RING)
-   ||name.equals(ITEM_HELL);
+   ||name.equals(ITEM_HELL)
+   ||name.equals("airburn/am2playground/spell/modifiers/Level")
+   ||name.equals("airburn/am2playground/spell/modifiers/Sacrament")
+   ||name.equals("airburn/am2playground/spell/modifiers/Diabolic")
+   ||name.equals("airburn/am2playground/spell/modifiers/Ethereal")
+   ||name.equals("airburn/am2playground/spell/modifiers/FloweringNature")
+   ||name.equals("airburn/am2playground/spell/modifiers/CovenConnection")
+   ||name.equals("airburn/am2playground/spell/components/Nullify")
+   ||name.equals(CONTINGENCY_TICK)
+   ||name.equals(PG_COMMON_EVENTS);
  }
  private static int apply(String name,ClassNode c) {
   if(name.endsWith("/ManaLink"))return manaLink(c);
@@ -51,6 +64,15 @@ public final class IndependentCompatibilityTransform implements Opcodes {
   if(name.equals(CONT_RING))return containerRecursionRing(c);
   if(name.equals(ITEM_RING))return itemRecursionRing(c);
   if(name.equals(ITEM_HELL))return itemHellRing(c);
+  if(name.equals("airburn/am2playground/spell/modifiers/Level"))return patchModifier(c,"balancedLevelModifier");
+  if(name.equals("airburn/am2playground/spell/modifiers/Sacrament"))return patchModifier(c,"balancedSacramentModifier");
+  if(name.equals("airburn/am2playground/spell/modifiers/Diabolic"))return patchModifier(c,"balancedDiabolicModifier");
+  if(name.equals("airburn/am2playground/spell/modifiers/Ethereal"))return patchModifier(c,"balancedEtherealModifier");
+  if(name.equals("airburn/am2playground/spell/modifiers/FloweringNature"))return patchModifier(c,"balancedFloweringNatureModifier");
+  if(name.equals("airburn/am2playground/spell/modifiers/CovenConnection"))return patchModifier(c,"balancedCovenConnectionModifier");
+  if(name.equals("airburn/am2playground/spell/components/Nullify"))return patchNullify(c);
+  if(name.equals(CONTINGENCY_TICK))return patchContingencyTick(c);
+  if(name.equals(PG_COMMON_EVENTS))return patchCommonEvents(c);
   return 0;
  }
  private static int manaLink(ClassNode c) {
@@ -94,6 +116,14 @@ public final class IndependentCompatibilityTransform implements Opcodes {
    }
    if(m.name.equals("getLearnState")&&m.desc.startsWith("(Lam2/api/SkillTreeEntry;")&&m.desc.endsWith("Lam2/api/spell/enums/LearnStates;")) {
     for(AbstractInsnNode n:m.instructions.toArray())if(n.getOpcode()==ARETURN){InsnList l=new InsnList();l.add(new VarInsnNode(ALOAD,1));l.add(new MethodInsnNode(INVOKESTATIC,UI,"filterLearnState","(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;",false));l.add(new TypeInsnNode(CHECKCAST,"am2/api/spell/enums/LearnStates"));m.instructions.insertBefore(n,l);changed++;}
+   }
+   if(m.name.equals("learn")&&m.desc.equals("(II)V")) {
+    InsnList l=new InsnList();LabelNode allowed=new LabelNode();
+    l.add(new VarInsnNode(ALOAD,0));l.add(new VarInsnNode(ILOAD,1));
+    l.add(new MethodInsnNode(INVOKESTATIC,UI,"allowDirectLearn","(Ljava/lang/Object;I)Z",false));
+    l.add(new JumpInsnNode(IFNE,allowed));l.add(new InsnNode(RETURN));
+    l.add(allowed);l.add(new FrameNode(F_SAME,0,null,0,null));
+    m.instructions.insert(l);changed++;
    }
   }
   return changed;
@@ -444,6 +474,16 @@ public final class IndependentCompatibilityTransform implements Opcodes {
  }
  private static Class<?> type(String name)throws Exception{return Class.forName(name);}
  private static Class<?> typeOrNull(String name){try{return Class.forName(name);}catch(Throwable ignored){return null;}}
+ private static Object field(String cls,String...names)throws Exception {
+  Class<?> c=type(cls);
+  for(String name:names)for(Class<?> at=c;at!=null;at=at.getSuperclass())try{Field f=at.getDeclaredField(name);f.setAccessible(true);return f.get(null);}catch(NoSuchFieldException ignored){}
+  throw new NoSuchFieldException(cls+Arrays.toString(names));
+ }
+ private static Object create(String cls,Object...args)throws Exception {
+  for(Constructor<?> c:type(cls).getConstructors())if(c.getParameterTypes().length==args.length)
+   try{return c.newInstance(args);}catch(IllegalArgumentException ignored){}
+  throw new NoSuchMethodException(cls+" constructor");
+ }
  private static Object get(Object o,String...names)throws Exception {
   for(String name:names)for(Class<?> c=o.getClass();c!=null;c=c.getSuperclass())try{Field f=c.getDeclaredField(name);f.setAccessible(true);return f.get(o);}catch(NoSuchFieldException ignored){}
   throw new NoSuchFieldException(Arrays.toString(names));
@@ -460,4 +500,327 @@ public final class IndependentCompatibilityTransform implements Opcodes {
  private static boolean is37(AbstractInsnNode n){return n instanceof IntInsnNode&&((IntInsnNode)n).operand==37||n instanceof LdcInsnNode&&Integer.valueOf(37).equals(((LdcInsnNode)n).cst);}
  private static AbstractInsnNode previous(AbstractInsnNode n){do{n=n.getPrevious();}while(n!=null&&n.getOpcode()<0);return n;}
  private static AbstractInsnNode next(AbstractInsnNode n){do{n=n.getNext();}while(n!=null&&n.getOpcode()<0);return n;}
+
+ private static int patchModifier(ClassNode c,String targetMethod) {
+  int changed=0;
+  for(MethodNode m:(List<MethodNode>)c.methods) {
+   if(m.name.equals("getModifier")&&m.desc.startsWith("(Lam2/api/spell/enums/SpellModifiers;")) {
+    InsnList l=new InsnList();
+    l.add(new VarInsnNode(ALOAD,1));
+    l.add(new VarInsnNode(ALOAD,2));
+    l.add(new VarInsnNode(ALOAD,3));
+    l.add(new VarInsnNode(ALOAD,4));
+    l.add(new VarInsnNode(ALOAD,5));
+    l.add(new MethodInsnNode(INVOKESTATIC,SELF,targetMethod,"(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;[B)F",false));
+    l.add(new InsnNode(FRETURN));
+    m.instructions.clear();
+    m.instructions.add(l);
+    changed++;
+   }
+  }
+  return changed;
+ }
+ private static int patchNullify(ClassNode c) {
+  int changed=0;
+  for(MethodNode m:(List<MethodNode>)c.methods) {
+   if(m.name.equals("applyEffectBlock")&&m.desc.startsWith("(Lnet/minecraft/item/ItemStack;")) {
+    InsnList l=new InsnList();
+    l.add(new VarInsnNode(ALOAD,1));
+    l.add(new VarInsnNode(ALOAD,2));
+    l.add(new VarInsnNode(ILOAD,3));
+    l.add(new VarInsnNode(ILOAD,4));
+    l.add(new VarInsnNode(ILOAD,5));
+    l.add(new VarInsnNode(ILOAD,6));
+    l.add(new VarInsnNode(DLOAD,7));
+    l.add(new VarInsnNode(DLOAD,9));
+    l.add(new VarInsnNode(DLOAD,11));
+    l.add(new VarInsnNode(ALOAD,13));
+    l.add(new MethodInsnNode(INVOKESTATIC,SELF,"balancedNullifyApplyEffectBlock","(Lnet/minecraft/item/ItemStack;Ljava/lang/Object;IIIIDDDLjava/lang/Object;)Z",false));
+    l.add(new InsnNode(IRETURN));
+    m.instructions.clear();
+    m.instructions.add(l);
+    changed++;
+   }
+   if(m.name.equals("applyEffectEntity")&&m.desc.startsWith("(Lnet/minecraft/item/ItemStack;")) {
+    InsnList l=new InsnList();
+    l.add(new VarInsnNode(ALOAD,1));
+    l.add(new VarInsnNode(ALOAD,2));
+    l.add(new VarInsnNode(ALOAD,3));
+    l.add(new VarInsnNode(ALOAD,4));
+    l.add(new MethodInsnNode(INVOKESTATIC,SELF,"balancedNullifyApplyEffectEntity","(Lnet/minecraft/item/ItemStack;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Z",false));
+    l.add(new InsnNode(IRETURN));
+    m.instructions.clear();
+    m.instructions.add(l);
+    changed++;
+   }
+   if(m.name.equals("<init>")) {
+    for(AbstractInsnNode n:m.instructions.toArray()) {
+     if(n instanceof LdcInsnNode&&Float.valueOf(240.0f).equals(((LdcInsnNode)n).cst)) {
+      ((LdcInsnNode)n).cst=Float.valueOf(60.0f);
+      changed++;
+     }
+    }
+   }
+  }
+  return changed;
+ }
+ public static float balancedLevelModifier(Object modifier,Object caster,Object target,Object world,byte[] meta) {
+  String mod=String.valueOf(modifier);
+  int magicLevel=0;
+  float xpFactor=1.0f;
+  if(caster!=null) {
+   try {
+    Object props=stat("am2.playerextensions.ExtendedProperties","For",caster);
+    if(props!=null)magicLevel=Math.max(0,((Number)call(props,"getMagicLevel")).intValue());
+   }catch(Throwable ignored){}
+   if(caster instanceof EntityPlayer) {
+    int xp=0;
+    try{Object o=get(caster,"field_71068_ca","experienceLevel");if(o instanceof Number)xp=((Number)o).intValue();}catch(Throwable ignored){}
+    xpFactor=1.0f+Math.min(Math.max(0,xp),60)/120.0f;
+   }
+  }
+  if("RANGE".equals(mod)||"RADIUS".equals(mod)) {
+   return (0.5f+Math.min(magicLevel,100)/25.0f)*xpFactor;
+  }
+  if("DAMAGE".equals(mod)||"DURATION".equals(mod)) {
+   float mult=(1.0f+Math.min(magicLevel,100)*0.015f)*xpFactor;
+   return Math.min(mult,3.75f);
+  }
+  if("HEALING".equals(mod)) {
+   float mult=(1.0f+Math.min(magicLevel,100)*0.012f)*xpFactor;
+   return Math.min(mult,3.3f);
+  }
+  return 1.0f;
+ }
+ public static float balancedSacramentModifier(Object modifier,Object caster,Object target,Object world,byte[] meta) {
+  String mod=String.valueOf(modifier);
+  if("RANGE".equals(mod))return 2.0f;
+  if("RADIUS".equals(mod))return 1.75f;
+  if("DAMAGE".equals(mod))return 2.25f;
+  if("DURATION".equals(mod))return 2.0f;
+  if("HEALING".equals(mod))return 2.0f;
+  if("PIERCING".equals(mod))return 2.0f;
+  if("BUFF_POWER".equals(mod))return 2.0f;
+  if("MINING_POWER".equals(mod))return 2.0f;
+  if("PROCS".equals(mod))return 1.0f;
+  if("VELOCITY_ADDED".equals(mod))return 1.5f;
+  if("DISMEMBERING_LEVEL".equals(mod))return 2.0f;
+  return 1.0f;
+ }
+ public static float balancedDiabolicModifier(Object modifier,Object caster,Object target,Object world,byte[] meta) {
+  String mod=String.valueOf(modifier);
+  int dim=0;
+  if(world!=null) {
+   try {
+    Object provider=get(world,"field_73011_w","provider");
+    if(provider!=null)dim=((Number)get(provider,"field_76574_g","dimensionId")).intValue();
+   }catch(Throwable ignored){}
+  }
+  if(dim==-1) {
+   if("DAMAGE".equals(mod))return 1.5f;
+   if("RANGE".equals(mod))return 1.5f;
+   if("RADIUS".equals(mod))return 1.5f;
+   if("DURATION".equals(mod))return 1.3f;
+   if("HEALING".equals(mod))return 1.0f;
+  }
+  return 1.0f;
+ }
+ public static float balancedEtherealModifier(Object modifier,Object caster,Object target,Object world,byte[] meta) {
+  String mod=String.valueOf(modifier);
+  int dim=0;
+  if(world!=null) {
+   try {
+    Object provider=get(world,"field_73011_w","provider");
+    if(provider!=null)dim=((Number)get(provider,"field_76574_g","dimensionId")).intValue();
+   }catch(Throwable ignored){}
+  }
+  if(dim==1) {
+   if("DAMAGE".equals(mod))return 1.5f;
+   if("RANGE".equals(mod))return 1.75f;
+   if("RADIUS".equals(mod))return 1.5f;
+   if("DURATION".equals(mod))return 1.3f;
+   if("HEALING".equals(mod))return 1.0f;
+  }
+  return 1.0f;
+ }
+ public static float balancedFloweringNatureModifier(Object modifier,Object caster,Object target,Object world,byte[] meta) {
+  String mod=String.valueOf(modifier);
+  long mana=0L;
+  if(caster instanceof EntityPlayer) {
+   try {
+    Object m=stat("airburn.am2playground.utils.helpers.PGMiscHelper","getBotaniaMana",caster);
+    if(m instanceof Number)mana=((Number)m).longValue();
+   }catch(Throwable ignored){}
+  }
+  float factor=Math.min(Math.max(0.0f,(float)mana/2000000.0f),1.0f);
+  if("HEALING".equals(mod)||"BUFF_POWER".equals(mod))return 1.0f+0.75f*factor;
+  if("DURATION".equals(mod))return 1.0f+0.5f*factor;
+  return 1.0f;
+ }
+ public static float balancedCovenConnectionModifier(Object modifier,Object caster,Object target,Object world,byte[] meta) {
+  String mod=String.valueOf(modifier);
+  int covenSize=0;
+  if(caster instanceof EntityPlayer) {
+   try {
+    Class<?> witchCls=typeOrNull("com.emoniph.witchery.entity.EntityCovenWitch");
+    if(witchCls!=null) {
+     Object s=invoke(witchCls,null,new String[]{"getCovenSize"},new Object[]{caster});
+     if(s instanceof Number)covenSize=Math.max(0,((Number)s).intValue());
+    }
+   }catch(Throwable ignored){}
+  }
+  if(covenSize<=0)return 1.0f;
+  float boost=0.15f*Math.min(covenSize,6);
+  if("RANGE".equals(mod)||"RADIUS".equals(mod)||"DURATION".equals(mod))return 1.0f+boost;
+  return 1.0f;
+ }
+ public static boolean balancedNullifyApplyEffectEntity(ItemStack stack,Object world,Object caster,Object target) {
+  if(world==null||target==null)return false;
+  try {
+   if(Boolean.TRUE.equals(get(world,"field_72995_K","isRemote")))return false;
+  }catch(Throwable ignored){}
+  if(target instanceof Entity) {
+   Entity e=(Entity)target;
+   return balancedNullifyApplyEffectBlock(stack,world,(int)Math.floor(e.field_70165_t),(int)Math.floor(e.field_70163_u),(int)Math.floor(e.field_70161_v),0,e.field_70165_t,e.field_70163_u,e.field_70161_v,caster);
+  }
+  return false;
+ }
+ public static boolean balancedNullifyApplyEffectBlock(ItemStack stack,Object world,int bx,int by,int bz,int face,double x,double y,double z,Object caster) {
+  if(world==null)return false;
+  try {
+   if(Boolean.TRUE.equals(get(world,"field_72995_K","isRemote")))return true;
+   double radius=4.0;
+   try {
+    Object utils=get(type("am2.spell.SpellUtils"),"instance");
+    Object radiusMod=get(type("am2.api.spell.enums.SpellModifiers"),"RADIUS");
+    Object mod=invoke(utils.getClass(),utils,new String[]{"getModifiedDouble_Add"},new Object[]{Double.valueOf(4.0),stack,caster,caster,world,Integer.valueOf(0),radiusMod});
+    if(mod instanceof Number)radius=((Number)mod).doubleValue();
+   }catch(Throwable ignored){}
+   radius=Math.min(Math.max(radius,2.0),16.0);
+   List list=(List)stat("airburn.am2playground.utils.helpers.PGMiscHelper","getEntitiesInRadius",world,Double.valueOf(x),Double.valueOf(y),Double.valueOf(z),Double.valueOf(radius));
+   if(list!=null) {
+    for(Object obj:list) {
+     if(!(obj instanceof Entity))continue;
+     Entity e=(Entity)obj;
+     if(type("net.minecraft.entity.EntityLivingBase").isInstance(e)) {
+      cleanseOrPurgeEntity(e,caster);
+     } else {
+      String cn=e.getClass().getName();
+      if(cn.contains("Spell")||cn.contains("Projectile")||cn.contains("Arrow")||cn.contains("Fireball")) {
+       try{call(e,new String[]{"func_70106_y","setDead"});}catch(Throwable ignored){}
+      }
+     }
+    }
+   }
+   return true;
+  }catch(Throwable ignored){return false;}
+ }
+ private static void cleanseOrPurgeEntity(Entity target,Object caster) {
+  try {
+   Collection effects=(Collection)call(target,new String[]{"func_70651_bq","getActivePotionEffects"});
+   if(effects==null||effects.isEmpty())return;
+   ArrayList snapshot=new ArrayList(effects);
+   boolean isAllied=(target==caster);
+   if(!isAllied&&target instanceof EntityPlayer&&caster instanceof EntityPlayer) {
+    try {
+     Boolean canAtk=(Boolean)call(caster,new String[]{"func_96122_a","canAttackPlayer"},target);
+     if(Boolean.FALSE.equals(canAtk))isAllied=true;
+    }catch(Throwable ignored){
+     try{Boolean same=(Boolean)call(caster,new String[]{"func_142014_c","isOnSameTeam"},target);if(Boolean.TRUE.equals(same))isAllied=true;}catch(Throwable ignored2){}
+    }
+   } else if(!isAllied&&caster instanceof EntityPlayer) {
+    try {
+     Object owner=call(target,new String[]{"func_152113_b","getOwnerId","getOwner"});
+     if(owner!=null) {
+      String oStr=String.valueOf(owner);
+      String cId=String.valueOf(call(caster,new String[]{"func_110124_au","getUniqueID"}));
+      String cName=String.valueOf(call(caster,new String[]{"func_70005_c_","getCommandSenderName"}));
+      if(oStr.equals(cId)||oStr.equals(cName))isAllied=true;
+     }
+    }catch(Throwable ignored){}
+   }
+   ArrayList toRemove=new ArrayList();
+   for(Object eff:snapshot) {
+    int pid=((Number)call(eff,new String[]{"func_76456_a","getPotionID"})).intValue();
+    boolean isBad=(pid==2||pid==4||pid==9||pid==15||pid==17||pid==18||pid==19||pid==20);
+    if(isAllied&&isBad)toRemove.add(Integer.valueOf(pid));
+    else if(!isAllied&&!isBad)toRemove.add(Integer.valueOf(pid));
+   }
+   for(Object id:toRemove)call(target,new String[]{"func_82170_o","removePotionEffect"},id);
+   if(!isAllied&&target instanceof EntityPlayer) {
+    try{call(target,new String[]{"func_71016_p","sendPlayerAbilities"});}catch(Throwable ignored){}
+   }
+  }catch(Throwable ignored){}
+ }
+ private static int patchContingencyTick(ClassNode c) {
+  int changed=0;
+  for(MethodNode m:(List<MethodNode>)c.methods) {
+   if(m.name.equals("beginStackStage")&&m.desc.startsWith("(Lam2/api/spell/ItemSpellBase;Lnet/minecraft/item/ItemStack;Lnet/minecraft/entity/EntityLivingBase;")) {
+    InsnList l=new InsnList();
+    l.add(new VarInsnNode(ALOAD,3));
+    l.add(new MethodInsnNode(INVOKESTATIC,SELF,"rejectBlockedContingencyCast","(Ljava/lang/Object;)Ljava/lang/Object;",false));
+    l.add(new TypeInsnNode(CHECKCAST,"am2/api/spell/enums/SpellCastResult"));
+    l.add(new InsnNode(ARETURN));
+    m.instructions.clear();
+    if(m.tryCatchBlocks!=null)m.tryCatchBlocks.clear();
+    if(m.localVariables!=null)m.localVariables.clear();
+    m.instructions.add(l);
+    changed++;
+   }
+  }
+  return changed;
+ }
+ private static int patchCommonEvents(ClassNode c) {
+  int changed=0;
+  for(MethodNode m:(List<MethodNode>)c.methods) {
+   if(m.name.equals("tickContingencySpell")&&m.desc.equals("(Lnet/minecraftforge/event/entity/living/LivingEvent$LivingUpdateEvent;)V")) {
+    for(AbstractInsnNode n:m.instructions.toArray()) {
+     if(n instanceof MethodInsnNode) {
+      MethodInsnNode call=(MethodInsnNode)n;
+      if(call.owner.equals(CONTINGENCY_HELPER)&&call.name.equals("getIfHasContingency")&&call.desc.equals("(Lam2/playerextensions/ExtendedProperties;Lam2/api/spell/enums/ContingencyTypes;)Lnet/minecraft/item/ItemStack;")) {
+       AbstractInsnNode prev=previous(n);
+       if(prev instanceof FieldInsnNode&&((FieldInsnNode)prev).owner.equals(CONTINGENCY_HELPER)&&((FieldInsnNode)prev).name.equals("TICK")) {
+        call.owner=SELF;
+        call.name="filterBlockedTickContingency";
+        call.desc="(Ljava/lang/Object;Ljava/lang/Object;)Lnet/minecraft/item/ItemStack;";
+        changed++;
+       }
+      }
+     }
+    }
+   }
+  }
+  return changed;
+ }
+ public static Object rejectBlockedContingencyCast(Object caster) {
+  try {
+   stat(PROGRESS.replace('/','.'),"notifyBlocked",caster);
+  }catch(Throwable ignored){}
+  try {
+   return Enum.valueOf((Class)type("am2.api.spell.enums.SpellCastResult"),"EFFECT_FAILED");
+  }catch(Exception error){throw new IllegalStateException("Missing SpellCastResult.EFFECT_FAILED",error);}
+ }
+ public static ItemStack filterBlockedTickContingency(Object props,Object type) {
+  if(props==null)return null;
+  try {
+   Object stack=stat("airburn.am2playground.utils.helpers.PGContingencyTypesHelper","getIfHasContingency",props,type);
+   if(stack!=null) {
+    Object amVersion=field("airburn.am2playground.utils.handlers.PGConfig","AM_VERSION");
+    if("TCLProject".equals(String.valueOf(amVersion))) {
+     Object snowball=field("net.minecraft.init.Items","field_151126_ay","snowball");
+     Object clearStack=create("net.minecraft.item.ItemStack",snowball);
+     stat("airburn.am2playground.utils.helpers.PGContingencyTypesHelper","setContingency",props,type,clearStack);
+     call(props,"forceSync");
+    } else {
+     Object curType=call(props,"getContingencyType");
+     if(curType==type) {
+      stat("airburn.am2playground.utils.helpers.PGContingencyTypesHelper","clearContingencies",props);
+      call(props,"forceSync");
+     }
+    }
+   }
+  }catch(Throwable ignored){}
+  return null;
+ }
+
 }

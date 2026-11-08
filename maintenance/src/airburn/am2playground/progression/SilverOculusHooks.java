@@ -48,8 +48,18 @@ public final class SilverOculusHooks {
   try{return ((Number)call(font,new String[]{"func_78276_b","drawString"},text,x,y,color)).intValue();}
   catch(Exception error){throw new IllegalStateException("Cannot draw native Oculus points",error);}
  }
- public static boolean canPurchase(Object part) {
+ public static boolean isBlockedSkill(Object part) {
   if(part==null)return false;
+  if("Contingency_Tick".equals(part))return true;
+  try {
+   Object name=call(field("am2.spell.SkillManager","instance"),"getSkillName",part);
+   if("Contingency_Tick".equals(name))return true;
+  }catch(Throwable ignored){}
+  return "airburn.am2playground.spell.shapes.Contingency_Tick".equals(part.getClass().getName())
+      ||"Contingency_Tick".equals(part.getClass().getSimpleName());
+ }
+ public static boolean canPurchase(Object part) {
+  if(part==null||isBlockedSkill(part))return false;
   try {
    Object kind=call(field("am2.spell.SkillTreeManager","instance"),"getSkillPointTypeForPart",part);
    if(!"SILVER".equals(String.valueOf(kind)))return true;
@@ -59,11 +69,25 @@ public final class SilverOculusHooks {
   }catch(Exception error){throw new IllegalStateException("Cannot validate Playground Silver purchase",error);}
  }
  public static Object filterLearnState(Object state,Object entry) {
-  if(!"CAN_LEARN".equals(String.valueOf(state)))return state;
   try {
+   if(entry!=null&&isBlockedSkill(get(entry,"registeredItem")))return enumValue("am2.api.spell.enums.LearnStates","DISABLED");
+   if(!"CAN_LEARN".equals(String.valueOf(state)))return state;
    if(canPurchase(get(entry,"registeredItem")))return state;
    return enumValue("am2.api.spell.enums.LearnStates","CANNOT_LEARN");
   }catch(Exception error){throw new IllegalStateException("Cannot filter Playground Oculus purchase",error);}
+ }
+ public static boolean allowDirectLearn(Object skillData,int id) {
+  if(skillData==null)return true;
+  try {
+   Object part=call(field("am2.spell.SkillManager","instance"),"getSkill",Integer.valueOf(id));
+   if(!isBlockedSkill(part))return true;
+   Object entity=get(skillData,"entity");
+   if(entity!=null&&!Boolean.TRUE.equals(get(get(entity,"field_70170_p","worldObj"),"field_72995_K","isRemote"))) {
+    call(skillData,"setFullSync");
+    SilverProgression.notifyBlocked(entity);
+   }
+   return false;
+  }catch(Throwable ignored){return true;}
  }
  /** Packet rejection happens before the native handler changes points or skills. */
  public static boolean allowPacket(Object skillData,byte[] data) {
@@ -141,7 +165,13 @@ public final class SilverOculusHooks {
   if(!(lines instanceof List))return;
   try {
    Object entry=get(gui,"hoveredItem");if(entry==null)return;
-   Object part=get(entry,"registeredItem");if(canPurchase(part))return;
+   Object part=get(entry,"registeredItem");
+   if(isBlockedSkill(part)) {
+    String hint=String.valueOf(stat("net.minecraft.util.StatCollector",new String[]{"func_74838_a","translateToLocal"},"am2pg.gui.blockedSpell"));
+    if(!((List)lines).contains(hint))((List)lines).add(hint);
+    return;
+   }
+   if(canPurchase(part))return;
    Object mc=stat("net.minecraft.client.Minecraft",new String[]{"func_71410_x","getMinecraft"});
    Object player=get(mc,"field_71439_g","thePlayer"),skill=stat("am2.playerextensions.SkillData",new String[]{"For"},player);
    if("LEARNED".equals(String.valueOf(call(skill,"getLearnState",entry,player))))return;

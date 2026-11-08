@@ -9,7 +9,7 @@ STUBS = {'airburn/am2playground/compat/PGCompat.java': 'package airburn.am2playg
  'airburn/am2playground/items/PGItems.java': 'package airburn.am2playground.items; public class '
                                              'PGItems {public static net.minecraft.item.ItemStack '
                                              'whiteOrbBloodBoss;}',
- 'net/minecraft/entity/Entity.java': 'package net.minecraft.entity; public class Entity { public '
+ 'net/minecraft/entity/Entity.java': 'package net.minecraft.entity; public class Entity { public void func_70106_y(){} public '
                                      'net.minecraft.world.World field_70170_p; public double '
                                      'field_70165_t,field_70163_u,field_70161_v; public '
                                      'net.minecraft.nbt.NBTTagCompound getEntityData(){return '

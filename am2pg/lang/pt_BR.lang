@@ -67,3 +67,7 @@ am2pg.gui.points.blue=Pontos azuis
 am2pg.gui.points.green=Pontos verdes
 am2pg.gui.points.red=Pontos vermelhos
 am2pg.gui.points.silver=Pontos Silver (cinza)
+
+# Mensagens da manutencao / Maintenance messages
+am2pg.gui.blockedSpell=Bloqueada neste servidor: Contingency: Tick foi desativada.
+am2pg.progress.blockedSpell=Contingency: Tick está desativada neste servidor.

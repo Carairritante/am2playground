@@ -27,6 +27,8 @@ am2pg.progress.consecrated=Sua consagração final foi concluída.
 am2pg.progress.alreadyConsecrated=Você já concluiu a consagração final.
 
 am2pg.gui.silverDiscoveryOnly=Pontos Silver livres compram somente talentos. Descubra esta habilidade por magia ou por sua recompensa especial.
+am2pg.gui.blockedSpell=Bloqueada neste servidor: Contingency: Tick foi desativada.
+am2pg.progress.blockedSpell=Contingency: Tick está desativada neste servidor.
 
 am2pg.progress.missing.requiresAM25=As descobertas avançadas requerem AM2.5 com World Fusion nativo.
 

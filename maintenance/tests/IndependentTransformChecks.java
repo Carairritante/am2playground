@@ -38,6 +38,7 @@ public final class IndependentTransformChecks implements Opcodes {
   if(alreadySynced){packet.instructions.add(new VarInsnNode(ALOAD,0));packet.instructions.add(new VarInsnNode(ALOAD,2));packet.instructions.add(invoke(INVOKEVIRTUAL,"am2/network/AMDataReader","getInt","()I"));packet.instructions.add(new FieldInsnNode(GETSTATIC,POINT,"SILVER","L"+POINT+";"));packet.instructions.add(invoke(INVOKEVIRTUAL,c.name,"setSpellPoints","(IL"+POINT+";)V"));}
   packet.instructions.add(new InsnNode(ICONST_1));packet.instructions.add(new InsnNode(IRETURN));
   method(c,"getLearnState","(Lam2/api/SkillTreeEntry;Lnet/minecraft/entity/player/EntityPlayer;)L"+STATE+";",new FieldInsnNode(GETSTATIC,STATE,"CAN_LEARN","L"+STATE+";"),new InsnNode(ARETURN));
+  method(c,"learn","(II)V",new InsnNode(RETURN));
   return c;
  }
  private static void checkRecursionRingTransforms()throws Exception {
@@ -116,7 +117,7 @@ public final class IndependentTransformChecks implements Opcodes {
   if(baseJar.isFile()) {
    ZipFile zip=new ZipFile(baseJar);
    try {
-    for(String entryName:new String[]{SLOT_RING,INV_RING,CONT_RING,ITEM_RING,ITEM_HELL}) {
+    for(String entryName:new String[]{SLOT_RING,INV_RING,CONT_RING,ITEM_RING,ITEM_HELL,"airburn/am2playground/spell/modifiers/Level","airburn/am2playground/spell/modifiers/Sacrament","airburn/am2playground/spell/modifiers/Diabolic","airburn/am2playground/spell/modifiers/Ethereal","airburn/am2playground/spell/modifiers/FloweringNature","airburn/am2playground/spell/modifiers/CovenConnection","airburn/am2playground/spell/components/Nullify","airburn/am2playground/spell/shapes/Contingency_Tick","airburn/am2playground/event/forge/PGCommonEventHandler"}) {
      ZipEntry entry=zip.getEntry(entryName+".class");
      need(entry!=null,"Missing class in base JAR: "+entryName);
      InputStream in=zip.getInputStream(entry);
@@ -131,6 +132,11 @@ public final class IndependentTransformChecks implements Opcodes {
      ClassNode verified=read(out);
      verify(verified);
      if(entryName.equals(SLOT_RING))need(calls(verified,"net/minecraft/client/Minecraft","func_71410_x")==0,"Real SlotAnyRing still references client Minecraft");
+      if(entryName.equals("airburn/am2playground/event/forge/PGCommonEventHandler")) {
+       need(calls(verified,SELF,"filterBlockedTickContingency")==1,"Real PGCommonEventHandler must block TICK contingency");
+       need(calls(verified,"airburn/am2playground/utils/helpers/PGContingencyTypesHelper","getIfHasContingency")==2,"DELAY and MANABAR contingencies must remain active");
+      }
+      if(entryName.equals("airburn/am2playground/spell/shapes/Contingency_Tick"))need(calls(verified,SELF,"rejectBlockedContingencyCast")==1,"Real Contingency_Tick must block casting");
     }
    } finally {
     zip.close();
@@ -146,6 +152,7 @@ public final class IndependentTransformChecks implements Opcodes {
    ClassNode skill=transform(skill(alreadySynced));
    need(calls(skill,"airburn/am2playground/progression/SilverOculusHooks","allowPacket")==1,"Server guard missing");
    need(calls(skill,"airburn/am2playground/progression/SilverOculusHooks","filterLearnState")==1,"Client state filter missing");
+   need(calls(skill,"airburn/am2playground/progression/SilverOculusHooks","allowDirectLearn")==1,"Direct learn guard missing");
    int silver=0;for(MethodNode m:(List<MethodNode>)skill.methods)for(AbstractInsnNode n:m.instructions.toArray())if(n instanceof MethodInsnNode&&((MethodInsnNode)n).name.equals("setSpellPoints")&&((MethodInsnNode)n).desc.equals("(IL"+POINT+";)V"))silver++;
    need(silver==1,"Fourth point value must be read exactly once, including cores with the native fix");
   }
@@ -168,6 +175,12 @@ public final class IndependentTransformChecks implements Opcodes {
   Class<?> panel=Class.forName(hooks);java.lang.reflect.Method compact=panel.getMethod("compact",int.class);
   for(int value:new int[]{0,999,1000,1500,999999,Integer.MAX_VALUE,Integer.MIN_VALUE})need(String.valueOf(compact.invoke(null,value)).length()<=6,"Large balance must fit: "+value);
   need("0".equals(compact.invoke(null,0))&&"1.5k".equals(compact.invoke(null,1500)),"Point formatting changed unexpectedly");
+  java.lang.reflect.Method isBlocked=panel.getMethod("isBlockedSkill",Object.class),canBuy=panel.getMethod("canPurchase",Object.class);
+  need(Boolean.TRUE.equals(isBlocked.invoke(null,"Contingency_Tick")),"Contingency_Tick must be blocked");
+  need(Boolean.FALSE.equals(canBuy.invoke(null,"Contingency_Tick")),"Contingency_Tick purchase must be rejected");
+  for(String allowed:new String[]{"CrashToDesktop","Manabolism","Singularity","StealArmor","Nolla","Contingency_Delay","Contingency_Mana"}) {
+   need(Boolean.FALSE.equals(isBlocked.invoke(null,allowed)),"Must not block allowed skill: "+allowed);
+  }
   byte[] untouched=bytes(fixture("example/Unrelated","java/lang/Object"));
   need(IndependentCompatibilityTransform.transform(untouched,"example.Unrelated")==untouched,"Unrelated classes changed");
   System.out.println("PASS: independent PG hooks, recursion ring server fixes, bytecode stack verification, native/fixed sync and idempotence.");

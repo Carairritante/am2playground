@@ -42,6 +42,10 @@ public final class SilverProgression {
   } catch(Exception error){throw new IllegalStateException("Cannot initialize advanced discoveries",error);}
  }
  public static boolean beforeLearn(Object player,Object part) {
+  if(SilverOculusHooks.isBlockedSkill(part)) {
+   if(player!=null&&!remote(player))message(player,"am2pg.progress.blockedSpell");
+   return false;
+  }
   if(!SilverProgressionRules.isTarget(part))return true;
   if(remote(player))return false;
   if(SilverProgressionRules.known(player,SilverProgressionRules.key(part)))return true;
@@ -60,6 +64,11 @@ public final class SilverProgression {
    for(int n=0;n<size;n++) {
     int id=Integer.parseInt(String.valueOf(call(list,new String[]{"func_150307_f","func_150307_f"},n)));
     Object part=call(manager,"getSkill",id);
+    if(SilverOculusHooks.isBlockedSkill(part)) {
+     if(remote(player))return false;
+     message(player,"am2pg.progress.blockedSpell");
+     return false;
+    }
     if(SilverProgressionRules.isTarget(part)) {
      if(remote(player))return false;
      if(!beforeLearn(player,part))return false;
@@ -67,6 +76,11 @@ public final class SilverProgression {
    }
    return true;
   } catch(Exception error){throw new IllegalStateException("Cannot validate skill orb",error);}
+ }
+ public static void notifyBlocked(Object player) {
+  if(player!=null&&type("net.minecraft.entity.player.EntityPlayer").isInstance(player)&&!remote(player)) {
+   message(player,"am2pg.progress.blockedSpell");
+  }
  }
  public static boolean onCast(Object event) {
   if(!advancedAvailable())return false;
