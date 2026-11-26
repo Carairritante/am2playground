@@ -19,11 +19,13 @@ from merge_compendium import compendium_replacements
 ROOT=Path(__file__).resolve().parent
 REPOSITORY=ROOT.parent
 DISPATCHER='airburn/am2playground/preloader/PGClassTransformer.class'
+PRELOADER='airburn/am2playground/preloader/PGPreloader.class'
 PAYLOADS=(
     'airburn/am2playground/compat/thaumcraft/PGRitualPortalRewards.class',
     'airburn/am2playground/items/PGSilverOrbRewards.class',
     'airburn/am2playground/preloader/ManaRegenTransformFix.class',
     'airburn/am2playground/preloader/IndependentCompatibilityTransform.class',
+    'airburn/am2playground/preloader/PreloaderUrlFix.class',
     'airburn/am2playground/utils/ManaRegenEvents.class',
     'airburn/am2playground/progression/SilverProgressionRules.class',
     'airburn/am2playground/progression/SilverOculusHooks.class',
@@ -165,6 +167,16 @@ def main():
         changes[DISPATCHER]=target.read_bytes()
         if b'airburn/am2playground/preloader/IndependentCompatibilityTransform' not in changes[DISPATCHER]:
             raise AssertionError('The dispatcher is missing the independent compatibility hook')
+        if PRELOADER in patched:
+            pre_in=stage/'preloader-input.class';pre_out=stage/'preloader-output.class'
+            pre_bytes=compat_changes.get(PRELOADER,patched[PRELOADER])
+            if b'airburn/am2playground/preloader/PreloaderUrlFix' not in pre_bytes:
+                pre_in.write_bytes(pre_bytes)
+                subprocess.run([args.java,'-cp',os.pathsep.join([str(args.patchers.resolve()),str(args.asm.resolve())]),
+                                'PatchPreloader',str(pre_in),str(pre_out)],check=True)
+                changes[PRELOADER]=pre_out.read_bytes()
+                if b'airburn/am2playground/preloader/PreloaderUrlFix' not in changes[PRELOADER]:
+                    raise AssertionError('The preloader is missing the URL fix hook')
         assembled=stage/'assembled.jar'
         with zipfile.ZipFile(assembled,'w',zipfile.ZIP_DEFLATED) as jar:
             for info in infos:

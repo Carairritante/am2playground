@@ -34,6 +34,7 @@ class PlayableBuildTests(unittest.TestCase):
         with zipfile.ZipFile(self.root / 'build/playable-dist' / self.version['playable_jar']) as jar:
             for name in build_playable.PAYLOADS:
                 self.assertEqual((self.root / 'build/payload' / name).read_bytes(), jar.read(name))
+            self.assertIn(b'airburn/am2playground/preloader/PreloaderUrlFix', jar.read(build_playable.PRELOADER))
 
     def test_changed_compiled_payload_is_in_the_playable_mod(self):
         name = 'airburn/am2playground/progression/SilverOculusHooks.class'

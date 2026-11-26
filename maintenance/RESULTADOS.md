@@ -1,5 +1,21 @@
 # Resultados registrados nos testes locais
 
+## CR3 — caminhos codificados no preloader — 26 de novembro de 2026
+
+O `PGPreloader` passa a decodificar URLs do classpath (por exemplo `%20`),
+preservando `+` literal, e a ignorar arquivos inexistentes.
+
+- JAR local `AM2PlayGround-Beta-0.12.1-CR3.jar`, SHA-256
+  `cf23df226b6c293af8d93a369f16966618b05b0ca9ffccf028e45f71b024ad9d`.
+- `ci.py` concluído localmente (JDK 17, Python 3.12): verificação das
+  transformações independentes e 16 testes Python aprovados.
+- Duas montagens seguidas produziram o mesmo arquivo. As 915 entradas têm o
+  mesmo conteúdo da compilação local de 24/11 ainda chamada CR2.
+- O teste do preloader usa a classe alterada contra pastas com espaços,
+  colchetes, `+` e acentos. A CR3 não foi aberta no jogo nem no modpack
+  Forbidden Series. Estes são resultados locais; o resultado do Actions consta
+  na execução do commit.
+
 ## CI jogável — CR2
 
 Entrega do mod jogável pelo Actions concluída a pedido de Akashiic.

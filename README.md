@@ -41,9 +41,13 @@ As atualizações CR14–CR18 do catálogo, da busca bilíngue e da HUD/menu do 
 pertencem ao [AM2.5](https://github.com/Carairritante/ArsMagica2/tree/correcoes).
 Elas não exigem outro JAR do Playground. A CR19 corrige as molduras do Compêndio
 no mod base, também sem alteração no addon. A versão atual do Playground é
-**CR2**, arquivo `AM2PlayGround-Beta-0.12.1-CR2.jar`.
-A CR2 conclui a entrega jogável pelo CI a pedido de Akashiic; o conteúdo de jogo
-da CR1 foi preservado. As próximas atualizações usarão CR3, CR4 e assim por diante, conforme o
+**CR3**, arquivo `AM2PlayGround-Beta-0.12.1-CR3.jar`.
+A CR3 corrige a leitura de arquivos pelo preloader quando o caminho do jogo tem
+espaços ou outros caracteres codificados na URL (como `%20`), o que gerava
+`FileNotFoundException` no log. Ela também reúne as correções publicadas depois
+da nomeação CR2: travamentos de servidor e sincronização do Ring of Recursion, e
+o bloqueio de `contingency_tick`. As próximas atualizações usarão CR4, CR5 e
+assim por diante, conforme o
 [registro de versão e checksum](maintenance/VERSION.json).
 
 O painel do Oculus mantém a aparência nativa em 2x2 (azul/verde e vermelho/Silver),

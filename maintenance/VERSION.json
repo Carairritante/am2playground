@@ -1,10 +1,10 @@
 {
   "base_version": "Beta-0.12.1",
-  "maintenance_revision": 2,
-  "playable_jar": "AM2PlayGround-Beta-0.12.1-CR2.jar",
-  "sha256": "a04423434834c29ba1ec6675da00993cbd762525dd0b7d53db15b751dc76b544",
+  "maintenance_revision": 3,
+  "playable_jar": "AM2PlayGround-Beta-0.12.1-CR3.jar",
+  "sha256": "cf23df226b6c293af8d93a369f16966618b05b0ca9ffccf028e45f71b024ad9d",
   "build_base": "base/AM2PlayGround-Beta-0.12.1-CR1.jar",
   "build_base_sha256": "a04423434834c29ba1ec6675da00993cbd762525dd0b7d53db15b751dc76b544",
-  "public_ci_artifact": "AM2PlayGround-Beta-0.12.1-CR2.jar",
+  "public_ci_artifact": "AM2PlayGround-Beta-0.12.1-CR3.jar",
   "public_ci_artifact_is_playable": true
 }

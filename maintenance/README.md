@@ -6,9 +6,11 @@ oficial do mod. Veja a [declaração de participação](AI_DISCLOSURE.md).
 
 ## Escopo e arquivos
 
-O JAR jogável atual chama-se `AM2PlayGround-Beta-0.12.1-CR2.jar` e é entregue
-pelo Actions público, junto do SHA256SUMS. A CR2 recompila os auxiliares de
-manutenção sobre a base verificada da CR1. Cada atualização posterior
+O JAR jogável atual chama-se `AM2PlayGround-Beta-0.12.1-CR3.jar` e é entregue
+pelo Actions público, junto do SHA256SUMS. A CR3 recompila os auxiliares de
+manutenção sobre a base verificada da CR1 e aplica `PatchPreloader` ao
+`PGPreloader`, para decodificar caminhos com `%20` e ignorar arquivos
+inexistentes. Cada atualização posterior
 publicada deve incrementar o número CR, mantendo o nome original do mod e
 atualizando [VERSION.json](VERSION.json), manifestos, README e SHA256SUMS.
 O JAR `AM2PG-maintenance-tools.jar` continua sendo somente ferramenta interna.

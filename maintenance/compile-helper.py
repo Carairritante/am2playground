@@ -90,6 +90,7 @@ def main():
         'airburn/am2playground/items/PGSilverOrbRewards',
         'airburn/am2playground/preloader/ManaRegenTransformFix',
         'airburn/am2playground/preloader/IndependentCompatibilityTransform',
+        'airburn/am2playground/preloader/PreloaderUrlFix',
         'airburn/am2playground/utils/ManaRegenEvents',
         'airburn/am2playground/progression/SilverProgressionRules',
         'airburn/am2playground/progression/SilverOculusHooks',

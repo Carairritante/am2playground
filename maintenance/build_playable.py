@@ -2,14 +2,42 @@
 from pathlib import Path
 import hashlib
 import json
+import os
 import re
 import shutil
+import subprocess
+import tempfile
 import zipfile
 
-from assemble_independent import PAYLOADS, merge_language
+from assemble_independent import PAYLOADS, PRELOADER, merge_language
 from merge_compendium import compendium_replacements
 
-ROOT = Path(__file__).resolve().parent
+TOOL_ROOT = Path(__file__).resolve().parent
+ROOT = TOOL_ROOT
+
+
+def patch_preloader(class_bytes):
+    if b'airburn/am2playground/preloader/PreloaderUrlFix' in class_bytes:
+        return class_bytes
+    patchers = TOOL_ROOT / 'build/patchers'
+    asm = TOOL_ROOT / 'build/dependencies/asm-all-5.0.3.jar'
+    if not (patchers / 'PatchPreloader.class').is_file() or not asm.is_file():
+        raise ValueError('Compile maintenance patchers first (ci.py)')
+    with tempfile.TemporaryDirectory(prefix='.am2pg-preloader-') as tmp:
+        stage = Path(tmp)
+        src = stage / 'PGPreloader.in.class'
+        dst = stage / 'PGPreloader.out.class'
+        src.write_bytes(class_bytes)
+        subprocess.run(
+            ['java', '-cp', os.pathsep.join([str(patchers), str(asm)]), 'PatchPreloader', str(src), str(dst)],
+            check=True,
+        )
+        patched = dst.read_bytes()
+    if patched[:4] != b'\xca\xfe\xba\xbe' or int.from_bytes(patched[6:8], 'big') > 52:
+        raise ValueError('Patched PGPreloader is not Java 8 bytecode')
+    if b'airburn/am2playground/preloader/PreloaderUrlFix' not in patched:
+        raise ValueError('Patched PGPreloader is missing PreloaderUrlFix hook')
+    return patched
 
 
 def build():
@@ -42,6 +70,7 @@ def build():
             if data[:4] != b'\xca\xfe\xba\xbe' or int.from_bytes(data[6:8], 'big') > 52:
                 raise ValueError('Payload is not Java 8 bytecode: ' + entry)
             changes[entry] = data
+        changes[PRELOADER] = patch_preloader(original[PRELOADER])
         changes.update(compendium_replacements(jar))
         for language in ('en_US', 'pt_BR'):
             entry = 'assets/am2pg/lang/' + language + '.lang'
@@ -58,6 +87,7 @@ def build():
             for entry in sorted(final):
                 info = zipfile.ZipInfo(entry, date_time=(1980, 1, 1, 0, 0, 0))
                 info.compress_type = zipfile.ZIP_DEFLATED
+                info.create_system = 3  # Same ZIP headers on Windows and on the Linux CI.
                 info.external_attr = (0o40755 if entry.endswith('/') else 0o100644) << 16
                 jar.writestr(info, final[entry])
     with zipfile.ZipFile(output) as jar:
